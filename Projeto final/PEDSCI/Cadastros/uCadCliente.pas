@@ -16,11 +16,11 @@ type
     lbUF: TLabel;
     lbTelefone: TLabel;
     edCodigo: TEdit;
-    edCPF: TEdit;
     edNome: TEdit;
     cbUF: TComboBox;
     lbAviso: TLabel;
     mskTelefone: TMaskEdit;
+    mskCPF: TMaskEdit;
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure pLimpaDados();
@@ -136,7 +136,7 @@ begin
     // INSERE OS DADOS DO BANCO NOS COMPONENTES
     edCodigo.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDCODCLI').AsString;
     edNome.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDNOMECLI').AsString;
-    edCPF.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDCNPJCPF').AsString;
+    mskCPF.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDCNPJCPF').AsString;
     mskTelefone.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDTELEFONE').AsString;
     cbUF.ItemIndex := (dmDadosPEDSCI.tbClientes.FieldByName('BDCODUF').AsInteger) - 1;
   end;
@@ -173,54 +173,42 @@ end;
 
 function TfrCadCliente.fVerificaCPF: Boolean;
 var
-  wReduzido, wPasse : Boolean;
   wTemp, wValorCalculado : String;
+  wQTD, wI : Integer;
 begin
-  wReduzido := True;
-  if (Length(edCPF.Text) <> 11) and (Length(edCPF.Text) <> 14) then
+
+  // VERIFICA SE O CPF ESTÁ COMPLETO
+  wQTD := 0;
+  for wI := 0 to Length(mskCPF.Text) do
+    begin
+      if (mskCPF.Text[wI] = ' ') then
+         wQTD := wQTD + 1;
+    end;
+
+  if (wQTD > 0) then
      begin
        lbAviso.Caption := 'CPF inválido';
-       edCPF.SetFocus;
+       mskCPF.SetFocus;
        Result := False;
        Exit;
-     end
-  else if (Length(edCPF.Text) = 14) then
-     begin
-        wPasse := False;
-        wReduzido := False;
-        if (Copy(edCPF.Text, 4, 1) <> '.') then
-           wPasse := True
-        else if (Copy(edCPF.Text, 8, 1) <> '.') then
-           wPasse := True
-        else if (Copy(edCPF.Text, 12, 1) <> '-') then
-           wPasse := True;
-        if (wPasse) then
-           begin
-             lbAviso.Caption := 'CPF inválido';
-             edCPF.SetFocus;
-             Result := False;
-             Exit;
-           end;
      end;
 
-  if not(wReduzido) then
-     begin
-       wTemp := Copy(edCPF.Text, 1, 3);
-       wTemp := wTemp + Copy(edCPF.Text, 5, 3);
-       wTemp := wTemp + Copy(edCPF.Text, 9, 3);
-       wTemp := wTemp + Copy(edCPF.Text, 13, 2);
-       edCPF.Text := wTemp;
-     end;
+  // COLETA OS CARACTERES NECESSÁRIOS E VERIFICA O CPF
+  wTemp := Copy(mskCPF.Text, 1, 3);
+  wTemp := wTemp + Copy(mskCPF.Text, 5, 3);
+  wTemp := wTemp + Copy(mskCPF.Text, 9, 3);
+  wTemp := wTemp + Copy(mskCPF.Text, 13, 2);
 
-  wValorCalculado := Copy(edCPF.Text, 1,9);
+  wValorCalculado := Copy(wTemp, 1,9);
   wValorCalculado := wValorCalculado + IntToStr(wTCliente.fCalculaCPF(wValorCalculado));
   wValorCalculado := wValorCalculado + IntToStr(wTCliente.fCalculaCPF(wValorCalculado));
-  if (wValorCalculado = edCPF.Text) then
+
+  if (wValorCalculado = wTemp) then
      Result := True
   else
      begin
        lbAviso.Caption := 'CPF inválido';
-       edCPF.SetFocus;
+       mskCPF.SetFocus;
        Result := False;
        Exit;
      end;
@@ -281,7 +269,7 @@ procedure TfrCadCliente.pColetaDados;
 begin
   // COLETA TODOS OS CAMPOS DA TELA
   wTCliente.wCod := StrToInt(edCodigo.Text);
-  wTCliente.wCPF := edCPF.Text;
+  wTCliente.wCPF := mskCPF.Text;
   wTCliente.wNome := edNome.Text;
   wTCliente.wCodUF := cbUF.ItemIndex;
   wTCliente.wTelefone := mskTelefone.Text;

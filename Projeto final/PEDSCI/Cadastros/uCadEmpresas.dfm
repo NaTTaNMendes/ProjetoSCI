@@ -56,6 +56,7 @@ inherited frCadEmpresas: TfrCadEmpresas
   end
   inherited tbFerramentas: TToolBar
     Width = 381
+    TabOrder = 5
     ExplicitWidth = 381
     inherited btConsultar: TToolButton
       OnClick = btConsultarClick
@@ -66,33 +67,25 @@ inherited frCadEmpresas: TfrCadEmpresas
     Top = 56
     Width = 158
     Height = 21
-    TabOrder = 1
+    TabOrder = 0
     TextHint = 'Insira o c'#243'digo'
     OnExit = edCodigoExit
   end
-  object edCNPJ: TEdit [8]
-    Left = 139
-    Top = 88
-    Width = 158
-    Height = 21
-    TabOrder = 2
-    TextHint = 'Insira o CNPJ'
-  end
-  object edNome: TEdit [9]
+  object edNome: TEdit [8]
     Left = 139
     Top = 120
     Width = 158
     Height = 21
-    TabOrder = 3
+    TabOrder = 2
     TextHint = 'Insira o nome'
   end
-  object cbUF: TComboBox [10]
+  object cbUF: TComboBox [9]
     Left = 139
     Top = 152
     Width = 158
     Height = 21
     ItemIndex = 0
-    TabOrder = 4
+    TabOrder = 3
     Text = 'ACRE'
     Items.Strings = (
       'ACRE'
@@ -125,15 +118,25 @@ inherited frCadEmpresas: TfrCadEmpresas
       'ZONA FRANCA'
       'EXTERIOR')
   end
-  object mskTelefone: TMaskEdit [11]
+  object mskTelefone: TMaskEdit [10]
     Left = 139
     Top = 179
     Width = 124
     Height = 21
     EditMask = '!\(99\)9999-9999;1;_'
     MaxLength = 13
-    TabOrder = 5
+    TabOrder = 4
     Text = '(  )    -    '
     TextHint = 'Informe o telefone'
+  end
+  object mskCNPJ: TMaskEdit [11]
+    Left = 139
+    Top = 83
+    Width = 124
+    Height = 21
+    EditMask = '99.999.999/9999-99;1;_'
+    MaxLength = 18
+    TabOrder = 1
+    Text = '  .   .   /    -  '
   end
 end

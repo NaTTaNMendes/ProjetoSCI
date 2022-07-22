@@ -16,11 +16,11 @@ type
     lbUF: TLabel;
     lbTelefone: TLabel;
     edCodigo: TEdit;
-    edCNPJ: TEdit;
     edNome: TEdit;
     cbUF: TComboBox;
     lbAviso: TLabel;
     mskTelefone: TMaskEdit;
+    mskCNPJ: TMaskEdit;
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure btConsultarClick(Sender: TObject);
@@ -57,19 +57,37 @@ begin
 end;
 
 procedure TfrCadEmpresas.btExcluirClick(Sender: TObject);
+var
+  wPasse : Boolean;
 begin
   inherited;
-  // COLETA OS DADOS
-  pColetaDados;
 
-  // TENTA DELETAR OS DADOS
-  if (wTEmpresa.fDeletarEmpresa) then
+  // VERIFICA SE OS DADOS ESTÃO CORRETOS
+  wPasse := True;
+  if not(fVerificaCodigo) then
+     wPasse := False
+  else if not(fVerificaCNPJ) then
+     wPasse := False
+  else if not(fVerificaNome) then
+     wPasse := False
+  else if not(fVerificaTelefone) then
+     wPasse := False;
+
+  if (wPasse) then
      begin
-       ShowMessage('Deletado com sucesso');
-       setLimpaCampos;
-     end
-  else
-     ShowMessage('Falha ao deletar');
+       // COLETA OS DADOS
+       pColetaDados;
+
+       // TENTA DELETAR OS DADOS
+       if (wTEmpresa.fDeletarEmpresa) then
+          begin
+            ShowMessage('Deletado com sucesso');
+            setLimpaCampos;
+          end
+       else
+          ShowMessage('Falha ao deletar');
+     end;
+
 end;
 
 procedure TfrCadEmpresas.btOkClick(Sender: TObject);
@@ -121,7 +139,7 @@ begin
          // INSERE OS DADOS DO BANCO NOS COMPONENTES
          edCodigo.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODEMP').AsString;
          edNome.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDNOMEEMP').AsString;
-         edCNPJ.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCNPJCPF').AsString;
+         mskCNPJ.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCNPJCPF').AsString;
          mskTelefone.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDTELEFONE').AsString;
          cbUF.ItemIndex := (dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODUF').AsInteger) - 1;
        end;
@@ -147,57 +165,43 @@ end;
 
 function TfrCadEmpresas.fVerificaCNPJ: Boolean;
 var
-  wReduzido, wPasse : Boolean;
   wTemp, wValorCalculado : String;
+  wQTD, wI : Integer;
 begin
-  wReduzido := True;
-  if (Length(edCNPJ.Text) <> 14) and (Length(edCNPJ.Text) <> 18) then
+
+  // VERIFICA SE O CPF ESTÁ COMPLETO
+  wQTD := 0;
+  for wI := 0 to Length(mskCNPJ.Text) do
+    begin
+      if (mskCNPJ.Text[wI] = ' ') then
+         wQTD := wQTD + 1;
+    end;
+
+  if (wQTD > 0) then
      begin
        lbAviso.Caption := 'CNPJ inválido';
-       edCNPJ.SetFocus;
+       mskCNPJ.SetFocus;
        Result := False;
        Exit;
-     end
-  else if (Length(edCNPJ.Text) = 18) then
-     begin
-        wPasse := False;
-        wReduzido := False;
-        if (Copy(edCNPJ.Text, 3, 1) <> '.') then
-           wPasse := True
-        else if (Copy(edCNPJ.Text, 7, 1) <> '.') then
-           wPasse := True
-        else if (Copy(edCNPJ.Text, 11, 1) <> '/') then
-           wPasse := True
-        else if (Copy(edCNPJ.Text, 16, 1) <> '-') then
-           wPasse := True;
-        if (wPasse) then
-           begin
-             lbAviso.Caption := 'CNPJ inválido';
-             edCNPJ.SetFocus;
-             Result := False;
-             Exit;
-           end;
      end;
 
-  if not(wReduzido) then
-     begin
-       wTemp := Copy(edCNPJ.Text, 1, 2);
-       wTemp := wTemp + Copy(edCNPJ.Text, 4, 3);
-       wTemp := wTemp + Copy(edCNPJ.Text, 8, 3);
-       wTemp := wTemp + Copy(edCNPJ.Text, 12, 4);
-       wTemp := wTemp + Copy(edCNPJ.Text, 17, 2);
-       edCNPJ.Text := wTemp;
-     end;
+  // COLETA OS CARACTERES NECESSÁRIOS E VERIFICA O CNPJ
+  wTemp := Copy(mskCNPJ.Text, 1, 2);
+  wTemp := wTemp + Copy(mskCNPJ.Text, 4, 3);
+  wTemp := wTemp + Copy(mskCNPJ.Text, 8, 3);
+  wTemp := wTemp + Copy(mskCNPJ.Text, 12, 4);
+  wTemp := wTemp + Copy(mskCNPJ.Text, 17, 2);
 
-  wValorCalculado := Copy(edCNPJ.Text, 1,12);
+  wValorCalculado := Copy(wTemp, 1,12);
   wValorCalculado := wValorCalculado + IntToStr(wTEmpresa.fCalculaCNPJ(wValorCalculado));
   wValorCalculado := wValorCalculado + IntToStr(wTEmpresa.fCalculaCNPJ(wValorCalculado));
-  if (wValorCalculado = edCNPJ.Text) then
+
+  if (wValorCalculado = wTemp) then
      Result := True
   else
      begin
        lbAviso.Caption := 'CNPJ inválido';
-       edCNPJ.SetFocus;
+       mskCNPJ.SetFocus;
        Result := False;
      end;
 end;
@@ -272,7 +276,7 @@ var
 begin
   // Coleta os dados na tela
   wTEmpresa.wCod := StrToInt(edCodigo.Text);
-  wTEmpresa.wCNPJ := edCNPJ.Text;
+  wTEmpresa.wCNPJ := mskCNPJ.Text;
   wTEmpresa.wNome := edNome.Text;
   wTEmpresa.wCodUF := cbUF.ItemIndex;
   wTEmpresa.wTelefone := mskTelefone.Text;

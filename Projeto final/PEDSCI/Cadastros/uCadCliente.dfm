@@ -56,7 +56,7 @@ inherited frCadCliente: TfrCadCliente
   end
   inherited tbFerramentas: TToolBar
     Width = 349
-    TabOrder = 4
+    TabOrder = 5
     ExplicitWidth = 349
     inherited btConsultar: TToolButton
       OnClick = btConsultarClick
@@ -71,15 +71,7 @@ inherited frCadCliente: TfrCadCliente
     TextHint = 'Insira o c'#243'digo'
     OnExit = edCodigoExit
   end
-  object edCPF: TEdit [8]
-    Left = 123
-    Top = 101
-    Width = 158
-    Height = 21
-    TabOrder = 1
-    TextHint = 'Insira o CPF'
-  end
-  object edNome: TEdit [9]
+  object edNome: TEdit [8]
     Left = 123
     Top = 133
     Width = 158
@@ -87,7 +79,7 @@ inherited frCadCliente: TfrCadCliente
     TabOrder = 2
     TextHint = 'Insira o nome'
   end
-  object cbUF: TComboBox [10]
+  object cbUF: TComboBox [9]
     Left = 123
     Top = 165
     Width = 158
@@ -126,15 +118,25 @@ inherited frCadCliente: TfrCadCliente
       'ZONA FRANCA'
       'EXTERIOR')
   end
-  object mskTelefone: TMaskEdit [11]
+  object mskTelefone: TMaskEdit [10]
     Left = 123
     Top = 200
     Width = 90
     Height = 21
     EditMask = '!\(99\)9999-9999;1;_'
     MaxLength = 13
-    TabOrder = 5
+    TabOrder = 4
     Text = '(  )    -    '
     TextHint = 'Informe o telefone'
+  end
+  object mskCPF: TMaskEdit [11]
+    Left = 123
+    Top = 106
+    Width = 90
+    Height = 21
+    EditMask = '999.999.999-99;1;_'
+    MaxLength = 14
+    TabOrder = 1
+    Text = '   .   .   -  '
   end
 end

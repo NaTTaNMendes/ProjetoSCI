@@ -13,7 +13,6 @@ type
     edFiltro: TEdit;
     cbFiltro: TComboBox;
     lbFiltrar: TLabel;
-    procedure btExcluirClick(Sender: TObject);
     procedure btFiltrarClick(Sender: TObject);
     procedure grConsultaTitleClick(Column: TColumn);
   private
@@ -35,12 +34,6 @@ implementation
 {$R *.dfm}
 
 { TfrConsProduto }
-
-procedure TfrConsProduto.btExcluirClick(Sender: TObject);
-begin
-  inherited;
-  ShowMessage('Dados excluídos');
-end;
 
 procedure TfrConsProduto.btFiltrarClick(Sender: TObject);
 begin

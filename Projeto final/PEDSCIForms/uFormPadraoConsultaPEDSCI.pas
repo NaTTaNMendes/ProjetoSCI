@@ -68,15 +68,21 @@ end;
 
 procedure TfrFormPadraoConsultaPEDSCI.ExcluirClickPadrao(Sender: TObject);
 begin
-  if Assigned(FOnExcluirEvent) and TUtilPEDSCI.PodeExcluir then
-  begin
-    FOnExcluirEvent(btExcluir);
-    if Assigned(FTabela) then
-    begin
-      FTabela.Delete;
-      FTabela.ApplyUpdates(0);
-    end;
+  try
+    if Assigned(FOnExcluirEvent) and TUtilPEDSCI.PodeExcluir then
+       begin
+         FOnExcluirEvent(btExcluir);
+         if Assigned(FTabela) then
+            begin
+              FTabela.Delete;
+              FTabela.ApplyUpdates(0);
+            end;
+       end;
+    ShowMessage('Dados deletados com sucesso');
+  except
+    ShowMessage('Não foi possível excluir');
   end;
+
 end;
 
 procedure TfrFormPadraoConsultaPEDSCI.FormCreate(Sender: TObject);

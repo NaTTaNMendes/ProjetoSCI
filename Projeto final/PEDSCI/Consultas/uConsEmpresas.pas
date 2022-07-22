@@ -14,7 +14,6 @@ type
     cbFiltro: TComboBox;
     edFiltro: TEdit;
     procedure FormShow(Sender: TObject);
-    procedure btExcluirClick(Sender: TObject);
     procedure btFiltrarClick(Sender: TObject);
     procedure grConsultaTitleClick(Column: TColumn);
   private
@@ -42,12 +41,6 @@ implementation
 uses udmDadosPEDSCI;
 
 { TfrConsEmpresas }
-
-procedure TfrConsEmpresas.btExcluirClick(Sender: TObject);
-begin
-  inherited;
-  ShowMessage('Deletado com sucesso');
-end;
 
 procedure TfrConsEmpresas.pFiltraCNPJ;
 begin

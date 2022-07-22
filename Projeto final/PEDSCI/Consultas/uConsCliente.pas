@@ -13,7 +13,6 @@ type
     lbFiltrar: TLabel;
     cbFiltro: TComboBox;
     edFiltro: TEdit;
-    procedure btExcluirClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btFiltrarClick(Sender: TObject);
     procedure grConsultaTitleClick(Column: TColumn);
@@ -38,12 +37,6 @@ implementation
 uses udmDadosPEDSCI;
 
 {$R *.dfm}
-
-procedure TfrConsCliente.btExcluirClick(Sender: TObject);
-begin
-  inherited;
-  ShowMessage('Deletado com sucesso');
-end;
 
 procedure TfrConsCliente.btFiltrarClick(Sender: TObject);
 begin
