@@ -1,0 +1,68 @@
+inherited frConsProduto: TfrConsProduto
+  Caption = 'Consultar Produto'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited tbFerramentas: TToolBar
+    inherited btFiltrar: TToolButton
+      OnClick = btFiltrarClick
+    end
+    object lbFiltrar: TLabel
+      Left = 140
+      Top = 0
+      Width = 66
+      Height = 30
+      Alignment = taCenter
+      Caption = '     Filtrar por:'
+      Layout = tlCenter
+    end
+  end
+  inherited grConsulta: TDBGrid
+    OnTitleClick = grConsultaTitleClick
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'BDCODPROD'
+        Title.Caption = 'C'#243'digo'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDNCM'
+        Title.Caption = 'NCM'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDDESCRICAO'
+        Title.Caption = 'Descri'#231#227'o'
+        Width = 485
+        Visible = True
+      end>
+  end
+  object edFiltro: TEdit [2]
+    Left = 363
+    Top = 4
+    Width = 182
+    Height = 21
+    TabOrder = 2
+    TextHint = 'Insira o filtro aqui'
+  end
+  object cbFiltro: TComboBox [3]
+    Left = 212
+    Top = 5
+    Width = 145
+    Height = 21
+    Style = csDropDownList
+    ItemIndex = 0
+    TabOrder = 3
+    Text = 'TODOS'
+    Items.Strings = (
+      'TODOS'
+      'C'#211'DIGO'
+      'DESCRI'#199#195'O'
+      'NCM')
+  end
+  inherited dsConsulta: TDataSource
+    DataSet = dmDadosPEDSCI.tbProdutos
+  end
+end

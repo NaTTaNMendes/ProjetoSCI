@@ -1,0 +1,103 @@
+unit udmConnectionPEDSCI;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DB, Data.SqlExpr, System.IniFiles, Vcl.Forms,
+  Vcl.Dialogs, Data.DBXFirebird, Data.FMTBcd;
+
+type
+  TdmConnectionPEDSCI = class(TDataModule)
+    SQLConnectionPEDSCI: TSQLConnection;
+    odSelecionaBanco: TOpenDialog;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure DataModuleDestroy(Sender: TObject);
+  private
+    { Private declarations }
+    function getDataBaseName: string;
+  public
+    { Public declarations }
+  end;
+
+var
+  dmConnectionPEDSCI: TdmConnectionPEDSCI;
+const
+  c_PEDSCICONF = 'PEDSCI.CONF';
+  c_PEDSCIFDB = 'PED.FDB';
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+procedure TdmConnectionPEDSCI.DataModuleCreate(Sender: TObject);
+begin
+  SQLConnectionPEDSCI.Close;
+  SQLConnectionPEDSCI.LibraryName := 'dbxfb.dll';
+  SQLConnectionPEDSCI.VendorLib := 'fbclient.dll';
+  SQLConnectionPEDSCI.Params.Values['DriverName'] := 'Firebird';
+  SQLConnectionPEDSCI.Params.Values['Database'] := getDataBaseName;
+  SQLConnectionPEDSCI.Params.Values['RoleName'] := 'RoleName';
+  SQLConnectionPEDSCI.Params.Values['User_Name'] := 'sysdba';
+  SQLConnectionPEDSCI.Params.Values['Password'] := 'masterkey';
+  SQLConnectionPEDSCI.Params.Values['ServerCharSet'] := 'WIN1252';
+  SQLConnectionPEDSCI.Params.Values['ErrorResourceFile'] := '';
+  SQLConnectionPEDSCI.Params.Values['LocaleCode'] := '0000';
+  SQLConnectionPEDSCI.Params.Values['BlobSize'] := '-1';
+  SQLConnectionPEDSCI.Params.Values['CommitRetain'] := 'False';
+  SQLConnectionPEDSCI.Params.Values['SQLDialect'] := '3';
+  SQLConnectionPEDSCI.Params.Values['WaitOnLocks'] := 'True';
+  SQLConnectionPEDSCI.Params.Values['IsolationLevel'] := 'ReadCommitted';
+  SQLConnectionPEDSCI.Params.Values['Trim Char'] := 'False';
+
+  if FileExists(SQLConnectionPEDSCI.Params.Values['Database']) then
+     SQLConnectionPEDSCI.Open
+  else
+  begin
+    MessageDlg('Não foi possível conectar no banco "' + SQLConnectionPEDSCI.Params.Values['Database'] + '".', mtWarning, [mbOK], 0);
+    Application.Terminate;
+  end;
+end;
+
+procedure TdmConnectionPEDSCI.DataModuleDestroy(Sender: TObject);
+begin
+  SQLConnectionPEDSCI.Close;
+end;
+
+function TdmConnectionPEDSCI.getDataBaseName: string;
+var
+  wIni: TIniFile;
+begin
+  Result := EmptyStr;
+  if not FileExists(ExtractFilePath(Application.ExeName) + c_PEDSCICONF) then
+  begin
+    if odSelecionaBanco.Execute then
+    begin
+      Result := odSelecionaBanco.FileName;
+      wIni := TIniFile.Create(ExtractFilePath(Application.ExeName) + c_PEDSCICONF);
+      try
+        wIni.WriteString(Application.Title, 'DataBaseName', Result);
+        wIni.UpdateFile;
+      finally
+        FreeAndNil(wIni);
+      end;
+    end;
+  end
+  else
+  begin
+    wIni := TIniFile.Create(ExtractFilePath(Application.ExeName) + c_PEDSCICONF);
+    try
+      Result := wIni.ReadString(Application.Title, 'DataBaseName', ExtractFilePath(Application.ExeName) + c_PEDSCIFDB);
+      if not FileExists(Result) then
+      begin
+        DeleteFile(ExtractFilePath(Application.ExeName) + c_PEDSCICONF);
+        Result := getDataBaseName;
+      end;
+    finally
+      FreeAndNil(wIni);
+    end;
+  end;
+end;
+
+end.

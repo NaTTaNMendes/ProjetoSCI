@@ -1,0 +1,36 @@
+inherited frConsProduto: TfrConsProduto
+  Caption = 'Consultar Produto'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited tbFerramentas: TToolBar
+    inherited btFiltrar: TToolButton
+      OnClick = btFiltrarClick
+    end
+  end
+  inherited grConsulta: TDBGrid
+    OnTitleClick = grConsultaTitleClick
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'BDCODPROD'
+        Title.Caption = 'C'#243'digo'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDNCM'
+        Title.Caption = 'NCM'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDDESCRICAO'
+        Title.Caption = 'Descri'#231#227'o'
+        Width = 485
+        Visible = True
+      end>
+  end
+  inherited dsConsulta: TDataSource
+    DataSet = dmDadosPEDSCI.tbProdutos
+  end
+end

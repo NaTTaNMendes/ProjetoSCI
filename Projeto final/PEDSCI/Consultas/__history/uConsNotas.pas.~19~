@@ -1,0 +1,221 @@
+unit uConsNotas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormPadraoConsultaPEDSCI, Data.DB,
+  System.ImageList, Vcl.ImgList, Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls,
+  Vcl.ToolWin, udmDadosPEDSCI, Datasnap.DBClient, Vcl.StdCtrls;
+
+type
+  TfrConsNota = class(TfrFormPadraoConsultaPEDSCI)
+    lbFiltrar: TLabel;
+    cbFiltro: TComboBox;
+    edFiltro: TEdit;
+    dtpFiltro: TDateTimePicker;
+    procedure cbFiltroChange(Sender: TObject);
+  private
+    { Private declarations }
+    procedure pFiltraNota();
+    procedure pFiltraCliente();
+    procedure pFiltraEmpresa();
+    procedure pFiltraProduto();
+    procedure pFiltraData();
+    procedure pFiltraQuantidade();
+    procedure pFiltraTotal();
+    procedure pFiltraBCICMS();
+    procedure pFiltraAliquota();
+    procedure pFiltraValorICMS();
+    procedure pVerificaGrid();
+  public
+    { Public declarations }
+    function setTabela: TClientDataSet; override;
+  end;
+
+var
+  frConsNota: TfrConsNota;
+
+implementation
+
+{$R *.dfm}
+
+{ TfrConsNota }
+
+procedure TfrConsNota.cbFiltroChange(Sender: TObject);
+begin
+  inherited;
+  if (cbFiltro.ItemIndex = 5) then
+     begin
+       edFiltro.Text := '';
+       edFiltro.Enabled := False;
+       dtpFiltro.Enabled := True;
+     end
+  else
+     begin
+       edFiltro.Enabled := True;
+       dtpFiltro.Enabled := True;
+     end;
+
+end;
+
+procedure TfrConsNota.pFiltraAliquota;
+var
+  wtemp : Currency;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbNotas.Filtered := False;
+    dmDadosPEDSCI.tbNotas.Filter := '(BDALIQICMS = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbNotas.Filtered := True;
+  except
+    ShowMessage('Alíquota inválida');
+    edFiltro.Text := '';
+    edFiltro.SetFocus;
+  end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraBCICMS;
+var
+  wtemp : Currency;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbNotas.Filtered := False;
+    dmDadosPEDSCI.tbNotas.Filter := '(BDBCICMS = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbNotas.Filtered := True;
+  except
+    ShowMessage('ICMS inválido');
+    edFiltro.Text := '';
+    edFiltro.SetFocus;
+  end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraCliente;
+var
+  wtemp : Integer;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbNotas.Filtered := False;
+    dmDadosPEDSCI.tbNotas.Filter := '(BDCODCLI = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbNotas.Filtered := True;
+  except
+    ShowMessage('Cliente inválido');
+    edFiltro.Text := '';
+    edFiltro.SetFocus;
+  end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraData;
+begin
+  dmDadosPEDSCI.tbNotas.Filtered := False;
+  dmDadosPEDSCI.tbNotas.Filter := 'BDDATAEMISSAO like ' + QuotedStr('%' + DateToStr(dtpFiltro.Date) + '%');
+  dmDadosPEDSCI.tbNotas.Filtered := True;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraEmpresa;
+var
+  wtemp : Integer;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbNotas.Filtered := False;
+    dmDadosPEDSCI.tbNotas.Filter := '(BDCODEMP = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbNotas.Filtered := True;
+  except
+    ShowMessage('Empresa inválida');
+    edFiltro.Text := '';
+    edFiltro.SetFocus;
+  end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraNota;
+var
+  wtemp : Integer;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbNotas.Filtered := False;
+    dmDadosPEDSCI.tbNotas.Filter := '(BDCODNOTA = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbNotas.Filtered := True;
+  except
+    ShowMessage('Nota inválida');
+    edFiltro.Text := '';
+    edFiltro.SetFocus;
+  end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraProduto;
+var
+  wtemp : Integer;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbNotas.Filtered := False;
+    dmDadosPEDSCI.tbNotas.Filter := '(BDCODPROD = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbNotas.Filtered := True;
+  except
+    ShowMessage('Produto inválido');
+    edFiltro.Text := '';
+    edFiltro.SetFocus;
+  end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraQuantidade;
+var
+  wtemp : Integer;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbNotas.Filtered := False;
+    dmDadosPEDSCI.tbNotas.Filter := '(BDQTD = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbNotas.Filtered := True;
+  except
+    ShowMessage('Quantidade inválida');
+    edFiltro.Text := '';
+    edFiltro.SetFocus;
+  end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsNota.pFiltraTotal;
+begin
+
+end;
+
+procedure TfrConsNota.pFiltraValorICMS;
+begin
+
+end;
+
+procedure TfrConsNota.pVerificaGrid;
+begin
+  if (dmDadosPEDSCI.tbNotas.RecordCount = 0) then
+     begin
+       ShowMessage('Nenhum dado encontrado');
+       dmDadosPEDSCI.tbNotas.Filtered := False;
+     end;
+end;
+
+function TfrConsNota.setTabela: TClientDataSet;
+begin
+  Result := dmDadosPEDSCI.tbNotas;
+end;
+
+end.

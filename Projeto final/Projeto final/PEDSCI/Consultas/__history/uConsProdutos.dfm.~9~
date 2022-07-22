@@ -1,0 +1,48 @@
+inherited frConsProduto: TfrConsProduto
+  Caption = 'Consultar Produto'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited tbFerramentas: TToolBar
+    object lbCodigo: TLabel
+      Left = 140
+      Top = 0
+      Width = 46
+      Height = 30
+      Caption = '   C'#243'digo:'
+      Layout = tlCenter
+    end
+    object edFiltro: TEdit
+      Left = 186
+      Top = 0
+      Width = 121
+      Height = 30
+      TabOrder = 0
+      TextHint = 'vazio n'#227'o filtra'
+    end
+  end
+  inherited grConsulta: TDBGrid
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'BDCODPROD'
+        Title.Caption = 'C'#243'digo'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDNCM'
+        Title.Caption = 'NCM'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDDESCRICAO'
+        Title.Caption = 'Descri'#231#227'o'
+        Width = 485
+        Visible = True
+      end>
+  end
+  inherited dsConsulta: TDataSource
+    DataSet = dmDadosPEDSCI.tbProdutos
+  end
+end

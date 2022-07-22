@@ -1,0 +1,118 @@
+inherited frLancNota: TfrLancNota
+  Caption = 'Lan'#231'amento de Nota Fiscal'
+  ClientHeight = 257
+  ClientWidth = 709
+  OnShow = FormShow
+  ExplicitWidth = 725
+  ExplicitHeight = 296
+  PixelsPerInch = 96
+  TextHeight = 13
+  object lbCodigoNota: TLabel [0]
+    Left = 57
+    Top = 57
+    Width = 62
+    Height = 13
+    Caption = 'C'#243'digo nota:'
+  end
+  object lbData: TLabel [1]
+    Left = 88
+    Top = 179
+    Width = 27
+    Height = 13
+    Caption = 'Data:'
+  end
+  object lbCliente: TLabel [2]
+    Left = 201
+    Top = 57
+    Width = 71
+    Height = 13
+    Caption = 'C'#243'digo cliente:'
+  end
+  object lbCodEmpresa: TLabel [3]
+    Left = 349
+    Top = 57
+    Width = 81
+    Height = 13
+    Caption = 'C'#243'digo empresa:'
+  end
+  object lbCodProd: TLabel [4]
+    Left = 509
+    Top = 60
+    Width = 78
+    Height = 13
+    Caption = 'C'#243'digo produto:'
+  end
+  object lbQuantidade: TLabel [5]
+    Left = 380
+    Top = 179
+    Width = 60
+    Height = 13
+    Caption = 'Quantidade:'
+  end
+  object lbTotal: TLabel [6]
+    Left = 308
+    Top = 217
+    Width = 75
+    Height = 13
+    Caption = 'Total: R$ ----,--'
+  end
+  inherited tbFerramentas: TToolBar
+    Width = 709
+    ExplicitWidth = 709
+  end
+  object edCodigoNota: TEdit [8]
+    Left = 130
+    Top = 54
+    Width = 55
+    Height = 21
+    TabOrder = 1
+    TextHint = 'Insira o c'#243'digo'
+  end
+  object edCodCliente: TEdit [9]
+    Left = 283
+    Top = 54
+    Width = 55
+    Height = 21
+    TabOrder = 2
+  end
+  object edCodEmpresa: TEdit [10]
+    Left = 442
+    Top = 54
+    Width = 55
+    Height = 21
+    TabOrder = 3
+  end
+  object edCodProd: TEdit [11]
+    Left = 593
+    Top = 57
+    Width = 55
+    Height = 21
+    TabOrder = 4
+  end
+  object dtpData: TDateTimePicker [12]
+    Left = 130
+    Top = 171
+    Width = 186
+    Height = 21
+    Date = 44760.000000000000000000
+    Time = 0.639012939813255800
+    TabOrder = 5
+  end
+  object edQuantidade: TEdit [13]
+    Left = 456
+    Top = 176
+    Width = 121
+    Height = 21
+    TabOrder = 6
+    TextHint = 'Insira a quantidade'
+  end
+  inherited imBotoes: TImageList
+    Left = 664
+  end
+  inherited imBotoesSelecionados: TImageList
+    Left = 664
+  end
+  inherited imBotoesDesabilitados: TImageList
+    Left = 664
+  end
+end

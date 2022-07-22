@@ -1,0 +1,85 @@
+unit uConsProdutos;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormPadraoConsultaPEDSCI, Data.DB,
+  System.ImageList, Vcl.ImgList, Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls,
+  Vcl.ToolWin, udmDadosPEDSCI, Datasnap.DBClient, Vcl.StdCtrls;
+
+type
+  TfrConsProduto = class(TfrFormPadraoConsultaPEDSCI)
+    lbCodigo: TLabel;
+    edFiltro: TEdit;
+    procedure btExcluirClick(Sender: TObject);
+    procedure btFiltrarClick(Sender: TObject);
+    procedure grConsultaTitleClick(Column: TColumn);
+  private
+    { Private declarations }
+    procedure pFiltro();
+  public
+    { Public declarations }
+    function setTabela: TClientDataSet; override;
+  end;
+
+var
+  frConsProduto: TfrConsProduto;
+
+implementation
+
+{$R *.dfm}
+
+{ TfrConsProduto }
+
+procedure TfrConsProduto.btExcluirClick(Sender: TObject);
+begin
+  inherited;
+  ShowMessage('Dados excluídos');
+end;
+
+procedure TfrConsProduto.btFiltrarClick(Sender: TObject);
+begin
+  inherited;
+  pFiltro;
+end;
+
+procedure TfrConsProduto.grConsultaTitleClick(Column: TColumn);
+begin
+  inherited;
+  if (Column.FieldName = 'BDCODPROD') then
+     dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDCODIGO'
+  else if (Column.FieldName = 'BDDESCRICAO') then
+     dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDDESCRICAO'
+  else if (Column.FieldName = 'BDNCM') then
+     dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDNCM';
+end;
+
+procedure TfrConsProduto.pFiltro;
+var
+  wTemp : Integer;
+begin
+  try
+    wTemp := StrToInt(edFiltro.Text);
+    dmDadosPEDSCI.tbProdutos.Filtered := False;
+    dmDadosPEDSCI.tbProdutos.Filter := '(BDCODPROD = ' + edFiltro.Text + ')';
+    dmDadosPEDSCI.tbProdutos.Filtered := True;
+  except
+    if (edFiltro.Text = '') then
+       dmDadosPEDSCI.tbProdutos.Filtered := False
+    else
+       begin
+         ShowMessage('Código não encontrado');
+         edFiltro.Text := '';
+         edFiltro.SetFocus;
+       end;
+  end;
+
+end;
+
+function TfrConsProduto.setTabela: TClientDataSet;
+begin
+  Result := dmDadosPEDSCI.tbProdutos;
+end;
+
+end.

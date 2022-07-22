@@ -1,0 +1,109 @@
+unit uConsEmpresas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormPadraoConsultaPEDSCI, Data.DB,
+  System.ImageList, Vcl.ImgList, Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls,
+  Vcl.ToolWin, Datasnap.DBClient, uUtilPEDSCI, Vcl.StdCtrls;
+
+type
+  TfrConsEmpresas = class(TfrFormPadraoConsultaPEDSCI)
+    lbFiltrar: TLabel;
+    cbFiltro: TComboBox;
+    edFiltro: TEdit;
+    procedure FormShow(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+  private
+    { Private declarations }
+    wTEmpresa : TEmpresa;
+    procedure PVerificaGrid();
+    procedure PFiltraCodigo();
+    procedure PFiltraNome();
+    procedure PFiltraCNPJ();
+    procedure PFiltraUF();
+    procedure PFiltraTelefone();
+  public
+    { Public declarations }
+    wFiltro : Integer;
+    function setTabela: TClientDataSet; override;
+  end;
+
+var
+  frConsEmpresas: TfrConsEmpresas;
+
+implementation
+
+{$R *.dfm}
+
+uses udmDadosPEDSCI;
+
+{ TfrConsEmpresas }
+
+procedure TfrConsEmpresas.btExcluirClick(Sender: TObject);
+begin
+  inherited;
+  ShowMessage('Deletado com sucesso');
+end;
+
+procedure TfrConsEmpresas.fFiltraCNPJ;
+begin
+
+end;
+
+procedure TfrConsEmpresas.fFiltraCodigo;
+begin
+
+end;
+
+procedure TfrConsEmpresas.fFiltraNome;
+begin
+  if (edFiltro.Text = '') then
+     begin
+       ShowMessage('Nome inválido');
+       edFiltro.Text := '';
+       edFiltro.SetFocus;
+     end
+  else
+     begin
+       dmDadosPEDSCI.tbEmpresas.Filtered := False;
+       dmDadosPEDSCI.tbEmpresas.Filter := 'BDNOMEEMP like ' + QuotedStr('%' + edFiltro.Text + '%');
+       dmDadosPEDSCI.tbEmpresas.Filtered := True;
+     end;
+
+  pVerificaGrid;
+end;
+
+procedure TfrConsEmpresas.fFiltraTelefone;
+begin
+
+end;
+
+procedure TfrConsEmpresas.fFiltraUF;
+begin
+
+end;
+
+procedure TfrConsEmpresas.FormShow(Sender: TObject);
+begin
+  inherited;
+  // CRIA A VARIÁVEL EMPRESA
+  wTEmpresa := TEmpresa.Create;
+end;
+
+procedure TfrConsEmpresas.fVerificaGrid;
+begin
+  if (dmDadosPEDSCI.tbEmpresas.RecordCount = 0) then
+     begin
+       ShowMessage('Nenhum dado encontrado');
+       dmDadosPEDSCI.tbEmpresas.Filtered := False;
+     end;
+end;
+
+function TfrConsEmpresas.setTabela: TClientDataSet;
+begin
+  Result := dmDadosPEDSCI.tbEmpresas;
+end;
+
+end.

@@ -1,0 +1,36 @@
+object dmConnectionPEDSCI: TdmConnectionPEDSCI
+  OldCreateOrder = False
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
+  Height = 344
+  Width = 414
+  object SQLConnectionPEDSCI: TSQLConnection
+    ConnectionName = 'FBConnection'
+    DriverName = 'Firebird'
+    LoginPrompt = False
+    Params.Strings = (
+      'DriverName=Firebird'
+      
+        'Database=C:\DWSCI\PED-Projeto Estagio Desenvolvedor\Banco\Final\' +
+        'PED.fdb'
+      'RoleName=RoleName'
+      'User_Name=sysdba'
+      'Password=masterkey'
+      'ServerCharSet=WIN1252'
+      'SQLDialect=3'
+      'ErrorResourceFile='
+      'LocaleCode=0000'
+      'BlobSize=-1'
+      'CommitRetain=False'
+      'WaitOnLocks=True'
+      'IsolationLevel=ReadCommitted'
+      'Trim Char=False')
+    Left = 56
+    Top = 24
+  end
+  object odSelecionaBanco: TOpenDialog
+    Filter = 'Firebird|*.fdb'
+    Left = 200
+    Top = 24
+  end
+end

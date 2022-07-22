@@ -1,0 +1,29 @@
+program PEDSCI;
+
+uses
+  Vcl.Forms,
+  uPEDSCI in 'uPEDSCI.pas' {frPEDSCI},
+  udmConnectionPEDSCI in '..\PEDSCIForms\DataModule\udmConnectionPEDSCI.pas' {dmConnectionPEDSCI: TDataModule},
+  udmDadosPEDSCI in '..\PEDSCIForms\DataModule\udmDadosPEDSCI.pas' {dmDadosPEDSCI: TDataModule},
+  uFormPadraoPEDSCI in '..\PEDSCIForms\uFormPadraoPEDSCI.pas' {frFormPadraoPEDSCI},
+  uFormPadraoCadastroPEDSCI in '..\PEDSCIForms\uFormPadraoCadastroPEDSCI.pas' {frFormPadraoCadastroPEDSCI},
+  uFormPadraoConsultaPEDSCI in '..\PEDSCIForms\uFormPadraoConsultaPEDSCI.pas' {frFormPadraoConsultaPEDSCI},
+  uUtilPEDSCI in '..\PEDSCIForms\uUtilPEDSCI.pas',
+  uConsEmpresas in 'Consultas\uConsEmpresas.pas' {frConsEmpresas},
+  uCadEmpresas in 'Cadastros\uCadEmpresas.pas' {frCadEmpresas},
+  uFiltro in 'uFiltro.pas' {frFiltro},
+  uCadCliente in 'Cadastros\uCadCliente.pas' {frCadCliente},
+  uConsCliente in 'Consultas\uConsCliente.pas' {frConsCliente},
+  uLancNota in 'Consultas\uLancNota.pas' {frLancNota};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrPEDSCI, frPEDSCI);
+  Application.CreateForm(TdmConnectionPEDSCI, dmConnectionPEDSCI);
+  Application.CreateForm(TdmDadosPEDSCI, dmDadosPEDSCI);
+  Application.CreateForm(TfrLancNota, frLancNota);
+  Application.Run;
+end.

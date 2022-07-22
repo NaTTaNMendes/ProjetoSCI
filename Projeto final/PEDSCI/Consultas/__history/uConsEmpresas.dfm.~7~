@@ -1,0 +1,47 @@
+inherited frConsEmpresas: TfrConsEmpresas
+  Caption = 'Consulta de empresas'
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited grConsulta: TDBGrid
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'BDCODEMP'
+        Title.Caption = 'C'#243'digo'
+        Width = 80
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDNOMEEMP'
+        Title.Caption = 'Nome'
+        Width = 119
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDCNPJCPF'
+        Title.Caption = 'CNPJ'
+        Width = 207
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDCODUF'
+        Title.Caption = 'UF'
+        Width = 86
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'BDTELEFONE'
+        Title.Caption = 'Telefone'
+        Width = 214
+        Visible = True
+      end>
+  end
+  inherited dsConsulta: TDataSource
+    DataSet = dmDadosPEDSCI.tbEmpresas
+  end
+end
