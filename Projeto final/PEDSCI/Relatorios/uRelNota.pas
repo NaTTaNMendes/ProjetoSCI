@@ -38,6 +38,7 @@ type
     wDataInicio : TDate;
     wDataFim : TDate;
     procedure pLimpaDados();
+    procedure pColetaDados();
     function fVerificaCodNota() : Boolean;
     function fVerificaCodCli() : Boolean;
     function fVerificaCodEmp() : Boolean;
@@ -98,7 +99,7 @@ begin
      begin
        try
          wTemp := StrToInt(edCodCli.Text);
-         // VERIFICA SE O PRODUTO EXISTE
+         // VERIFICA SE O CLIENTE EXISTE NA TABELA DE NOTAS
          dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODCLI';
          if (dmDadosPEDSCI.tbNotas.FindKey([wTemp])) then
             Result := True
@@ -118,27 +119,166 @@ begin
 end;
 
 function TfrRelatorioNota.fVerificaCodEmp: Boolean;
+var
+  wTemp : Integer;
 begin
+  if (Length(edCodEmp.Text) <> 0) then
+     begin
+       try
+         wTemp := StrToInt(edCodEmp.Text);
+         // VERIFICA SE A EMPRESA EXISTE NA TABELA DE NOTAS
+         dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODEMP';
+         if (dmDadosPEDSCI.tbNotas.FindKey([wTemp])) then
+            Result := True
+         else
+            begin
+              lbAviso.Caption := 'Empresa não possui nota';
+              Result := False;
+            end;
+       except
+         lbAviso.Caption := 'Código de empresa inválido';
+         edCodEmp.SetFocus;
+         Result := False;
+       end;
+     end;
 
 end;
 
 function TfrRelatorioNota.fVerificaCodNota: Boolean;
+var
+  wTemp : Integer;
 begin
+  if (Length(edCodNota.Text) <> 0) then
+     begin
+       try
+         wTemp := StrToInt(edCodNota.Text);
+         // VERIFICA SE A NOTA EXISTE NA TABELA DE NOTAS
+         dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODNOTA';
+         if (dmDadosPEDSCI.tbNotas.FindKey([wTemp])) then
+            Result := True
+         else
+            begin
+              lbAviso.Caption := 'Nota não existe';
+              Result := False;
+            end;
+       except
+         lbAviso.Caption := 'Código de nota inválido';
+         edCodNota.SetFocus;
+         Result := False;
+       end;
+     end;
 
 end;
 
 function TfrRelatorioNota.fVerificaData: Boolean;
 begin
+  if (dtpFim.DateTime < dtpInicio.DateTime) then
+     begin
+       lbAviso.Caption := 'Datas inválidas';
+       dtpInicio.SetFocus;
+       Result := False;
+     end
+  else
+     Result := True;
 
 end;
 
 function TfrRelatorioNota.fVerificaNomeCli: Boolean;
+var
+  wTemp : String;
+  wNumeroCli : Integer;
 begin
+  wTemp := edNomeCli.Text;
+  wTemp := StringReplace(wTemp, ' ', EmptyStr, [rfReplaceAll]);
 
+  if (Length(wTemp) <> 0) then
+     begin
+       // VERIFICA SE O NOME DO CLIENTE EXISTE NA TABELA DE NOTAS
+       dmDadosPEDSCI.tbClientes.IndexFieldNames := 'BDNOMECLI';
+       if (dmDadosPEDSCI.tbClientes.FindKey([edNomeCli.Text])) then
+          begin
+            wNumeroCli := dmDadosPEDSCI.tbClientes.FieldByName('BDCODCLI').AsInteger;
+
+            dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODCLI';
+            if (dmDadosPEDSCI.tbNotas.FindKey([wNumeroCli])) then
+               begin
+                 Result := True;
+                 Exit;
+               end
+            else
+               begin
+                 lbAviso.Caption := 'Cliente não possui nota';
+                 edNomeCli.SetFocus;
+                 Result := False;
+                 Exit;
+               end;
+          end
+       else
+          begin
+            lbAviso.Caption := 'Cliente não existe';
+            edNomeCli.SetFocus;
+            Result := False;
+            Exit;
+          end;
+     end;
 end;
 
 function TfrRelatorioNota.fVerificaNomeEmp: Boolean;
+var
+  wTemp : String;
+  wNumeroEmp : Integer;
 begin
+  wTemp := edNomeEmp.Text;
+  wTemp := StringReplace(wTemp, ' ', EmptyStr, [rfReplaceAll]);
+
+  if (Length(wTemp) <> 0) then
+     begin
+       // VERIFICA SE O NOME DA EMPRESA EXISTE NA TABELA DE EMPRESAS
+       dmDadosPEDSCI.tbEmpresas.IndexFieldNames := 'BDNOMEEMP';
+       if (dmDadosPEDSCI.tbEmpresas.FindKey([edNomeEmp.Text])) then
+          begin
+            wNumeroEmp := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODEMP').AsInteger;
+
+            dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODEMP';
+            if (dmDadosPEDSCI.tbNotas.FindKey([wNumeroEmp])) then
+               begin
+                 Result := True;
+                 Exit;
+               end
+            else
+               begin
+                 lbAviso.Caption := 'Empresa não possui nota';
+                 edNomeEmp.SetFocus;
+                 Result := False;
+                 Exit;
+               end;
+          end
+       else
+          begin
+            lbAviso.Caption := 'Empresa não existe';
+            edNomeEmp.SetFocus;
+            Result := False;
+            Exit;
+          end;
+     end;
+end;
+
+procedure TfrRelatorioNota.pColetaDados;
+begin
+  if (Length(edCodNota.Text) <> 0) then
+     begin
+       wCodNota := StrToInt(edCodNota.Text);
+     end;
+  if (Length(edCodEmp.Text) <> 0) then
+     begin
+       wCodEmp := StrToInt(edCodEmp.Text);
+     end;
+  if (Length(edCodCli.Text) <> 0) then
+     begin
+       wCodCli := StrToInt(edCodCli.Text);
+     end;
+  if (Length(ed)) then
+
 
 end;
 
