@@ -16,7 +16,10 @@ uses
   uCadProdutos in 'Cadastros\uCadProdutos.pas' {frCadProduto},
   uConsProdutos in 'Consultas\uConsProdutos.pas' {frConsProduto},
   uLancNota in 'Cadastros\uLancNota.pas' {frLancNota},
-  uConsNotas in 'Consultas\uConsNotas.pas' {frConsNota};
+  uConsNotas in 'Consultas\uConsNotas.pas' {frConsNota},
+  uFormPadraoRelatorioPEDSCI in '..\PEDSCIForms\uFormPadraoRelatorioPEDSCI.pas' {frFormPadraoRelatorioPEDSCI},
+  uRelEmpresa in 'Relatorios\uRelEmpresa.pas' {frRelatorio},
+  uRelNota in 'Relatorios\uRelNota.pas' {frRelatorioNota};
 
 {$R *.res}
 
@@ -26,5 +29,6 @@ begin
   Application.CreateForm(TfrPEDSCI, frPEDSCI);
   Application.CreateForm(TdmConnectionPEDSCI, dmConnectionPEDSCI);
   Application.CreateForm(TdmDadosPEDSCI, dmDadosPEDSCI);
+  Application.CreateForm(TfrRelatorioNota, frRelatorioNota);
   Application.Run;
 end.

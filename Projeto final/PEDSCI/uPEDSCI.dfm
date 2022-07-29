@@ -2371,6 +2371,17 @@ object frPEDSCI: TfrPEDSCI
         OnClick = mmNotasClick
       end
     end
+    object mmRelatorios: TMenuItem
+      Caption = 'Relat'#243'rios'
+      object mmRelatorioEmpresa: TMenuItem
+        Caption = 'Empresas'
+        OnClick = mmRelatorioEmpresaClick
+      end
+      object mmRelatorioNotas: TMenuItem
+        Caption = 'Notas'
+        OnClick = mmRelatorioNotasClick
+      end
+    end
     object mmAjuda: TMenuItem
       Caption = 'Ajuda'
       object mmSobre: TMenuItem

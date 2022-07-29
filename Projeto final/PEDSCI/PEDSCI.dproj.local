@@ -29,8 +29,8 @@
     <Transaction>2022/07/19 16:37:27.000.934,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadCliente.dfm</Transaction>
     <Transaction>2022/07/19 16:37:27.000.934,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadCliente.pas</Transaction>
     <Transaction>2022/07/19 17:07:41.000.527,=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
-    <Transaction>2022/07/19 17:08:43.000.929,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsCliente.dfm</Transaction>
     <Transaction>2022/07/19 17:08:43.000.929,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsCliente.pas</Transaction>
+    <Transaction>2022/07/19 17:08:43.000.929,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsCliente.dfm</Transaction>
     <Transaction>2022/07/19 17:53:32.000.722,=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/07/19 17:56:12.000.745,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uLancNota.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/07/19 17:56:12.000.745,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uLancNota.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm</Transaction>
@@ -42,13 +42,24 @@
     <Transaction>2022/07/20 13:46:20.000.265,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadProdutos.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/07/20 13:46:20.000.265,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadProdutos.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm</Transaction>
     <Transaction>2022/07/20 14:02:58.000.558,=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
-    <Transaction>2022/07/20 14:04:57.000.293,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsProdutos.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm</Transaction>
     <Transaction>2022/07/20 14:04:57.000.293,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsProdutos.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
+    <Transaction>2022/07/20 14:04:57.000.293,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsProdutos.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm</Transaction>
     <Transaction>2022/07/20 14:19:14.000.044,=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uLancNota.pas</Transaction>
     <Transaction>2022/07/20 15:06:34.000.322,=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
-    <Transaction>2022/07/20 15:07:10.000.195,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsNotas.dfm</Transaction>
     <Transaction>2022/07/20 15:07:10.000.195,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsNotas.pas</Transaction>
+    <Transaction>2022/07/20 15:07:10.000.195,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uConsNotas.dfm</Transaction>
     <Transaction>2022/07/22 11:10:44.000.942,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\uFiltro.pas=</Transaction>
+    <Transaction>2022/07/28 13:26:48.000.122,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCIForms\uFormPadraoRelatorioPEDSCI.pas</Transaction>
+    <Transaction>2022/07/28 13:33:35.000.406,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.pas</Transaction>
+    <Transaction>2022/07/28 13:34:20.000.146,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.pas</Transaction>
+    <Transaction>2022/07/28 13:34:20.000.146,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.dfm</Transaction>
+    <Transaction>2022/07/28 13:38:13.000.157,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresas.pas</Transaction>
+    <Transaction>2022/07/28 13:38:35.000.601,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresas.pas=</Transaction>
+    <Transaction>2022/07/28 13:39:04.000.281,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.dfm</Transaction>
+    <Transaction>2022/07/28 13:39:04.000.281,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.pas</Transaction>
+    <Transaction>2022/07/28 13:39:10.000.342,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresa.pas</Transaction>
+    <Transaction>2022/07/28 13:39:10.000.342,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresa.dfm</Transaction>
+    <Transaction>2022/07/29 12:55:33.767,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelNota.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="..\..\Projeto final"/>
@@ -64,6 +75,8 @@
     <File Path="..\PEDSCIForms\uFormPadraoConsultaPEDSCI.dfm"/>
     <File Path="..\PEDSCIForms\uFormPadraoPEDSCI.pas"/>
     <File Path="..\PEDSCIForms\uFormPadraoPEDSCI.dfm"/>
+    <File Path="..\PEDSCIForms\uFormPadraoRelatorioPEDSCI.pas"/>
+    <File Path="..\PEDSCIForms\uFormPadraoRelatorioPEDSCI.dfm"/>
     <File Path="..\PEDSCIForms\uUtilPEDSCI.pas"/>
     <File Path="Cadastros"/>
     <File Path="Cadastros\uCadCliente.pas"/>
@@ -83,6 +96,11 @@
     <File Path="Consultas\uConsNotas.dfm"/>
     <File Path="Consultas\uConsProdutos.pas"/>
     <File Path="Consultas\uConsProdutos.dfm"/>
+    <File Path="Relatorios"/>
+    <File Path="Relatorios\uRelEmpresa.pas"/>
+    <File Path="Relatorios\uRelEmpresa.dfm"/>
+    <File Path="Relatorios\uRelNota.pas"/>
+    <File Path="Relatorios\uRelNota.dfm"/>
     <File Path="uPEDSCI.pas"/>
     <File Path="uPEDSCI.dfm"/>
   </ProjectSortOrder>

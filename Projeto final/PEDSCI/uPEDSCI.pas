@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ExtCtrls, uCadEmpresas, uConsEmpresas, uConsCliente, uCadCliente,
-  uCadProdutos, uConsProdutos, uConsNotas, uLancNota, Vcl.Imaging.pngimage;
+  uCadProdutos, uConsProdutos, uConsNotas, uLancNota, Vcl.Imaging.pngimage, uRelEmpresa, uRelNota;
 
 type
   TfrPEDSCI = class(TForm)
@@ -24,6 +24,9 @@ type
     mmProduto: TMenuItem;
     mProduto: TMenuItem;
     mmNotas: TMenuItem;
+    mmRelatorios: TMenuItem;
+    mmRelatorioEmpresa: TMenuItem;
+    mmRelatorioNotas: TMenuItem;
     procedure mmSobreClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mmCadEmpresasClick(Sender: TObject);
@@ -34,6 +37,8 @@ type
     procedure mProdutoClick(Sender: TObject);
     procedure mmNotasClick(Sender: TObject);
     procedure mmLancNotaClick(Sender: TObject);
+    procedure mmRelatorioEmpresaClick(Sender: TObject);
+    procedure mmRelatorioNotasClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -108,6 +113,22 @@ var
 begin
   wCadProduto := TfrCadProduto.Create(Self);
   wCadProduto.Show;
+end;
+
+procedure TfrPEDSCI.mmRelatorioEmpresaClick(Sender: TObject);
+var
+  wRelatorio : TfrRelatorio;
+begin
+  wRelatorio := TfrRelatorio.Create(Self);
+  wRelatorio.Show;
+end;
+
+procedure TfrPEDSCI.mmRelatorioNotasClick(Sender: TObject);
+var
+  wRelatorio : TfrRelatorioNota;
+begin
+  wRelatorio := TfrRelatorioNota.Create(Self);
+  wRelatorio.Show;
 end;
 
 procedure TfrPEDSCI.mmSobreClick(Sender: TObject);

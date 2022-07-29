@@ -1,0 +1,27 @@
+unit uRelEmrpesa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormPadraoRelatorioPEDSCI, Data.FMTBcd,
+  Data.DB, Data.SqlExpr, frxClass, frxDBSet, frxExportCSV, frxExportDOCX,
+  frxExportXLSX, frxExportBaseDialog, frxExportPDF, frxDesgn, System.ImageList,
+  Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin;
+
+type
+  TfrRelatorio = class(TfrFormPadraoRelatorioPEDSCI)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frRelatorio: TfrRelatorio;
+
+implementation
+
+{$R *.dfm}
+
+end.
