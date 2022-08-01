@@ -45,11 +45,12 @@ inherited frRelatorioNota: TfrRelatorioNota
   object lbAviso: TLabel [5]
     Left = 16
     Top = 196
-    Width = 33
+    Width = 3
     Height = 13
   end
   inherited tbFerramentas: TToolBar
     Width = 363
+    ExplicitWidth = 363
   end
   object edCodNota: TEdit [7]
     Left = 128
@@ -98,6 +99,7 @@ inherited frRelatorioNota: TfrRelatorioNota
     Height = 17
     Caption = 'Filtrar por data'
     TabOrder = 6
+    OnClick = ckDataClick
   end
   object dtpFim: TDateTimePicker [13]
     Left = 176

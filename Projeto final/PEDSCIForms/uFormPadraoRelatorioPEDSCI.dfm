@@ -3,14 +3,13 @@ inherited frFormPadraoRelatorioPEDSCI: TfrFormPadraoRelatorioPEDSCI
   ClientHeight = 378
   ClientWidth = 805
   OnCreate = FormCreate
-  ExplicitLeft = -45
   ExplicitWidth = 821
   ExplicitHeight = 417
   PixelsPerInch = 96
   TextHeight = 13
   inherited tbFerramentas: TToolBar
     Width = 805
-    ExplicitWidth = 528
+    ExplicitWidth = 805
     object btVisualizar: TToolButton
       Left = 0
       Top = 0

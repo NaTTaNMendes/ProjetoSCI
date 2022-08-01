@@ -106,58 +106,61 @@ begin
   end;
 
   frxDBDatasetPadrao.DataSet := SQLQueryPadrao;
+  if (frxDBDatasetPadrao.DataSet.Active) and  (not frxDBDatasetPadrao.DataSet.Eof) then
+     begin
 
-  if Sender = btEditar then
-     frxReportLayout.DesignReport
-  else
-  if Sender = btVisualizar then
-  begin
-    frxReportLayout.PrepareReport;
-    frxReportLayout.ShowReport;
-  end
-  else
-  if Sender = btImprimir then
-  begin
-    frxReportLayout.PrepareReport;
-    frxReportLayout.PrintOptions.ShowDialog := False;
-    if PrintDialog1.Execute then
-       frxReportLayout.Print;
-  end
-  else
-  if Sender = btExportar then
-  begin
-    SaveDialog1.FileName := Caption;
-    if SaveDialog1.Execute then
-    begin
-      if MessageDlg('Deseja abrir o arquivo exportado para visualização?', mtInformation, [mbYes,mbNo], 0) = mrYes then
+      if Sender = btEditar then
+         frxReportLayout.DesignReport
+      else
+      if Sender = btVisualizar then
       begin
-        frxPDFExport1.OpenAfterExport := True;
-        frxXLSXExport1.OpenAfterExport := True;
-        frxDOCXExport1.OpenAfterExport := True;
-        frxCSVExport1.OpenAfterExport := True;
+        frxReportLayout.PrepareReport;
+        frxReportLayout.ShowReport;
       end
       else
+      if Sender = btImprimir then
       begin
-        frxPDFExport1.OpenAfterExport := False;
-        frxXLSXExport1.OpenAfterExport := False;
-        frxDOCXExport1.OpenAfterExport := False;
-        frxCSVExport1.OpenAfterExport := False;
-      end;
-      frxPDFExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.pdf';
-      frxXLSXExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.xlsx';
-      frxDOCXExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.docx';
-      frxCSVExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.csv';
+        frxReportLayout.PrepareReport;
+        frxReportLayout.PrintOptions.ShowDialog := False;
+        if PrintDialog1.Execute then
+           frxReportLayout.Print;
+      end
+      else
+      if Sender = btExportar then
+      begin
+        SaveDialog1.FileName := Caption;
+        if SaveDialog1.Execute then
+        begin
+          if MessageDlg('Deseja abrir o arquivo exportado para visualização?', mtInformation, [mbYes,mbNo], 0) = mrYes then
+          begin
+            frxPDFExport1.OpenAfterExport := True;
+            frxXLSXExport1.OpenAfterExport := True;
+            frxDOCXExport1.OpenAfterExport := True;
+            frxCSVExport1.OpenAfterExport := True;
+          end
+          else
+          begin
+            frxPDFExport1.OpenAfterExport := False;
+            frxXLSXExport1.OpenAfterExport := False;
+            frxDOCXExport1.OpenAfterExport := False;
+            frxCSVExport1.OpenAfterExport := False;
+          end;
+          frxPDFExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.pdf';
+          frxXLSXExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.xlsx';
+          frxDOCXExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.docx';
+          frxCSVExport1.FileName := StringReplace(SaveDialog1.FileName, ExtractFileExt(SaveDialog1.FileName), EmptyStr, [rfIgnoreCase]) + '.csv';
 
-      frxReportLayout.PrepareReport;
+          frxReportLayout.PrepareReport;
 
-      case SaveDialog1.FilterIndex of
-      1: frxReportLayout.Export(frxPDFExport1);
-      2: frxReportLayout.Export(frxXLSXExport1);
-      3: frxReportLayout.Export(frxDOCXExport1);
-      4: frxReportLayout.Export(frxCSVExport1);
+          case SaveDialog1.FilterIndex of
+          1: frxReportLayout.Export(frxPDFExport1);
+          2: frxReportLayout.Export(frxXLSXExport1);
+          3: frxReportLayout.Export(frxDOCXExport1);
+          4: frxReportLayout.Export(frxCSVExport1);
+          end;
+        end;
       end;
-    end;
-  end;
+     end;
 end;
 
 end.

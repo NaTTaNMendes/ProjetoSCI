@@ -29,6 +29,5 @@ begin
   Application.CreateForm(TfrPEDSCI, frPEDSCI);
   Application.CreateForm(TdmConnectionPEDSCI, dmConnectionPEDSCI);
   Application.CreateForm(TdmDadosPEDSCI, dmDadosPEDSCI);
-  Application.CreateForm(TfrRelatorioNota, frRelatorioNota);
   Application.Run;
 end.
