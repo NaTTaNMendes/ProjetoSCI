@@ -22,6 +22,9 @@ type
     dsNotas: TSQLDataSet;
     dspNotas: TDataSetProvider;
     tbNotas: TClientDataSet;
+    dsItens: TSQLDataSet;
+    dspItens: TDataSetProvider;
+    tbItens: TClientDataSet;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private

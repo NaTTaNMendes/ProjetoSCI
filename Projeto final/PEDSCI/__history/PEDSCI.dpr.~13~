@@ -1,0 +1,33 @@
+program PEDSCI;
+
+uses
+  Vcl.Forms,
+  uPEDSCI in 'uPEDSCI.pas' {frPEDSCI},
+  udmConnectionPEDSCI in '..\PEDSCIForms\DataModule\udmConnectionPEDSCI.pas' {dmConnectionPEDSCI: TDataModule},
+  udmDadosPEDSCI in '..\PEDSCIForms\DataModule\udmDadosPEDSCI.pas' {dmDadosPEDSCI: TDataModule},
+  uFormPadraoPEDSCI in '..\PEDSCIForms\uFormPadraoPEDSCI.pas' {frFormPadraoPEDSCI},
+  uFormPadraoCadastroPEDSCI in '..\PEDSCIForms\uFormPadraoCadastroPEDSCI.pas' {frFormPadraoCadastroPEDSCI},
+  uFormPadraoConsultaPEDSCI in '..\PEDSCIForms\uFormPadraoConsultaPEDSCI.pas' {frFormPadraoConsultaPEDSCI},
+  uUtilPEDSCI in '..\PEDSCIForms\uUtilPEDSCI.pas',
+  uConsEmpresas in 'Consultas\uConsEmpresas.pas' {frConsEmpresas},
+  uCadEmpresas in 'Cadastros\uCadEmpresas.pas' {frCadEmpresas},
+  uCadCliente in 'Cadastros\uCadCliente.pas' {frCadCliente},
+  uConsCliente in 'Consultas\uConsCliente.pas' {frConsCliente},
+  uCadProdutos in 'Cadastros\uCadProdutos.pas' {frCadProduto},
+  uConsProdutos in 'Consultas\uConsProdutos.pas' {frConsProduto},
+  uLancNota in 'Cadastros\uLancNota.pas' {frLancNota},
+  uConsNotas in 'Consultas\uConsNotas.pas' {frConsNota},
+  uFormPadraoRelatorioPEDSCI in '..\PEDSCIForms\uFormPadraoRelatorioPEDSCI.pas' {frFormPadraoRelatorioPEDSCI},
+  uRelEmpresa in 'Relatorios\uRelEmpresa.pas' {frRelatorio},
+  uRelNota in 'Relatorios\uRelNota.pas' {frRelatorioNota};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrPEDSCI, frPEDSCI);
+  Application.CreateForm(TdmConnectionPEDSCI, dmConnectionPEDSCI);
+  Application.CreateForm(TdmDadosPEDSCI, dmDadosPEDSCI);
+  Application.Run;
+end.

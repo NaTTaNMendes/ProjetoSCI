@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormPadraoCadastroPEDSCI, Vcl.ComCtrls,
   Vcl.StdCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin, uUtilPEDSCI, udmDadosPEDSCI,
-  Data.DB, Datasnap.DBClient;
+  Data.DB, Datasnap.DBClient, uCadItens;
 
 type
   TfrLancNota = class(TfrFormPadraoCadastroPEDSCI)
@@ -14,19 +14,14 @@ type
     lbData: TLabel;
     lbCliente: TLabel;
     lbCodEmpresa: TLabel;
-    lbCodProd: TLabel;
-    lbQuantidade: TLabel;
     edCodigoNota: TEdit;
     edCodCliente: TEdit;
     edCodEmpresa: TEdit;
-    edCodProd: TEdit;
     dtpData: TDateTimePicker;
-    edQuantidade: TEdit;
-    lbVaor: TLabel;
-    edValor: TEdit;
     lbAliquota: TLabel;
     edAliquota: TEdit;
     lbAviso: TLabel;
+    btItens: TButton;
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure btConsultarClick(Sender: TObject);
@@ -34,16 +29,17 @@ type
     procedure pColetaDados();
     procedure pLimpaDados();
     procedure edCodigoNotaExit(Sender: TObject);
+    procedure btItensClick(Sender: TObject);
   private
     { Private declarations }
     wTNota : TNota;
     function fVerificaCodigoNota() : Boolean;
     function fVerificaCodigoCliente() : Boolean;
     function fVerificaCodigoEmpresa() : Boolean;
-    function fVerificaCodigoProduto() : Boolean;
-    function fVerificaValor() : Boolean;
+    //function fVerificaCodigoProduto() : Boolean;
+    //function fVerificaValor() : Boolean;
     function fVerificaAliquota() : Boolean;
-    function fVerificaQuantidade : Boolean;
+    //function fVerificaQuantidade : Boolean;
   public
     { Public declarations }
     function setTabela: TClientDataSet; override;
@@ -79,14 +75,14 @@ begin
      wPasse := False
   else if not(fVerificaCodigoEmpresa) then
      wPasse := False
-  else if not(fVerificaCodigoProduto) then
-     wPasse := False
-  else if not(fVerificaValor) then
-     wPasse := False
+  //else if not(fVerificaCodigoProduto) then
+  //  wPasse := False
+  //else if not(fVerificaValor) then
+  //   wPasse := False
   else if not(fVerificaAliquota) then
-     wPasse := False
-  else if not(fVerificaQuantidade) then
      wPasse := False;
+  //else if not(fVerificaQuantidade) then
+  //   wPasse := False;
 
   if (wPasse) then
      begin
@@ -105,6 +101,18 @@ begin
 
 end;
 
+procedure TfrLancNota.btItensClick(Sender: TObject);
+var
+  wCadItens : TfrCadItens;
+begin
+  inherited;
+  wCadItens := TfrCadItens.Create(Self);
+  wCadItens.Show;
+  wCadItens.wCodNota := StrToInt(edCodigoNota.Text);
+  wCadItens.wCodEmp := StrToInt(edCodEmpresa.Text);
+
+end;
+
 procedure TfrLancNota.btOkClick(Sender: TObject);
 var
   wPasse : Boolean;
@@ -119,14 +127,14 @@ begin
      wPasse := False
   else if not(fVerificaCodigoEmpresa) then
      wPasse := False
-  else if not(fVerificaCodigoProduto) then
-     wPasse := False
-  else if not(fVerificaValor) then
-     wPasse := False
+  //else if not(fVerificaCodigoProduto) then
+  //   wPasse := False
+  //else if not(fVerificaValor) then
+  //   wPasse := False
   else if not(fVerificaAliquota) then
-     wPasse := False
-  else if not(fVerificaQuantidade) then
      wPasse := False;
+  //else if not(fVerificaQuantidade) then
+  //  wPasse := False;
 
   if (wPasse) then
      begin
@@ -157,10 +165,10 @@ begin
             edCodigoNota.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODNOTA').AsString;
             edCodCliente.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODCLI').AsString;
             edCodEmpresa.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODEMP').AsString;
-            edCodProd.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODPROD').AsString;
-            edQuantidade.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDQTD').AsString;
+            //edCodProd.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODPROD').AsString;
+            //edQuantidade.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDQTD').AsString;
             dtpData.DateTime := dmDadosPEDSCI.tbNotas.FieldByName('BDDATAEMISSAO').AsDateTime;
-            edValor.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDVLRNOTA').AsString;
+            //edValor.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDVLRNOTA').AsString;
             edAliquota.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDALIQICMS').AsString;
           end;
      end;
@@ -261,7 +269,7 @@ begin
     Result := False;
   end;
 end;
-
+{
 function TfrLancNota.fVerificaCodigoProduto: Boolean;
 var
   wTemp : Integer;
@@ -319,18 +327,18 @@ begin
     Result := False;
   end;
 end;
-
+}
 procedure TfrLancNota.pColetaDados;
 begin
   // COLETA OS DADOS
   wTNota.wCod := StrToInt(edCodigoNota.Text);
   wTNota.wCodCli := StrToInt(edCodCliente.Text);
   wTNota.wCodEmp := StrToInt(edCodEmpresa.Text);
-  wTNota.wCodProd := StrToInt(edCodProd.Text);
+  //wTNota.wCodProd := StrToInt(edCodProd.Text);
   wTNota.wData := dtpData.Date;
-  wTNota.wQuantidade := StrToInt(edQuantidade.Text);
+  //wTNota.wQuantidade := StrToInt(edQuantidade.Text);
   wTNota.wAliquota := StrToCurr(edAliquota.Text);
-  wTNota.wValor := StrToCurr(edValor.Text);
+  //wTNota.wValor := StrToCurr(edValor.Text);
 end;
 
 procedure TfrLancNota.pLimpaDados;

@@ -183,6 +183,10 @@ object dmDadosPEDSCI: TdmDadosPEDSCI
       item
         Name = 'BDNCM'
         DataType = ftInteger
+      end
+      item
+        Name = 'BDVALOR'
+        DataType = ftCurrency
       end>
     IndexDefs = <
       item
@@ -198,6 +202,11 @@ object dmDadosPEDSCI: TdmDadosPEDSCI
       item
         Name = 'iNCM'
         Fields = 'BDNCM'
+        Options = [ixCaseInsensitive]
+      end
+      item
+        Name = 'iVALOR'
+        Fields = 'BDVALOR'
         Options = [ixCaseInsensitive]
       end>
     Params = <>
@@ -316,5 +325,71 @@ object dmDadosPEDSCI: TdmDadosPEDSCI
     StoreDefs = True
     Left = 160
     Top = 200
+  end
+  object dsItens: TSQLDataSet
+    CommandText = 'select * from TITENSNOTA'
+    MaxBlobSize = -1
+    Params = <>
+    SQLConnection = dmConnectionPEDSCI.SQLConnectionPEDSCI
+    Left = 24
+    Top = 264
+  end
+  object dspItens: TDataSetProvider
+    DataSet = dsItens
+    Left = 92
+    Top = 264
+  end
+  object tbItens: TClientDataSet
+    Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'BDCODNOTA'
+        DataType = ftInteger
+      end
+      item
+        Name = 'BDCODITEM'
+        DataType = ftInteger
+      end
+      item
+        Name = 'BDCODPROD'
+        DataType = ftInteger
+      end
+      item
+        Name = 'BDQUANTIDADE'
+        DataType = ftInteger
+      end
+      item
+        Name = 'BDCODEMP'
+        DataType = ftInteger
+      end
+      item
+        Name = 'BDVLRUNITARIO'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'BDVLRTOTAL'
+        DataType = ftCurrency
+      end>
+    IndexDefs = <
+      item
+        Name = 'ICODITEM'
+        Fields = 'BDCODITEM'
+        Options = [ixPrimary, ixUnique]
+      end
+      item
+        Name = 'ICODNOTA'
+        Fields = 'BDCODNOTA'
+        Options = [ixPrimary, ixUnique]
+      end
+      item
+        Name = 'ICODEMP'
+        Fields = 'BDCODEMP'
+        Options = [ixPrimary, ixUnique]
+      end>
+    Params = <>
+    ProviderName = 'dspItens'
+    StoreDefs = True
+    Left = 160
+    Top = 264
   end
 end

@@ -58,9 +58,23 @@ type
     wCod : Integer;
     wDescricao : String;
     wNCM : Integer;
+    wValor : Currency;
 
     function fInserirProduto() : Boolean;
     function fDeletarProduto() : Boolean;
+  end;
+
+  TItemNota = class
+  public
+    wCodNota : Integer;
+    wCodItem : Integer;
+    wCodProd : Integer;
+    wQuantidade : Integer;
+    wCodEmp : Integer;
+    wVlrUnit : Currency;
+    wVlrTotal : Currency;
+
+    function fInserirItem() : Boolean;
   end;
 implementation
 
@@ -224,6 +238,7 @@ begin
   dmDadosPEDSCI.tbProdutos.FieldByName('BDCODPROD').AsInteger := wCod;
   dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString := wDescricao;
   dmDadosPEDSCI.tbProdutos.FieldByName('BDNCM').AsInteger := wNCM;
+  dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsCurrency := wValor;
 
   // ENVIA PARA O BANCO
   dmDadosPEDSCI.tbProdutos.Post;
@@ -273,6 +288,33 @@ begin
 
   // ENVIA PARA O BANCO
   dmDadosPEDSCI.tbNotas.Post;
+
+  // INFORMA QUE DEU CERTO
+  Result := True;
+end;
+
+{ TItemNota }
+
+function TItemNota.fInserirItem: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbItens.IndexFieldNames := 'BDCODNOTA';
+  if dmDadosPEDSCI.tbItens.FindKey([wCodNota]) then
+     dmDadosPEDSCI.tbItens.Edit
+  else
+     dmDadosPEDSCI.tbItens.Insert;
+
+  // INSERE OS DADOS NO CDS
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODNOTA').AsInteger := wCodNota;
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODITEM').AsInteger := wCodItem;
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODPROD').AsInteger := wCodProd;;
+  dmDadosPEDSCI.tbItens.FieldByName('BDQUANTIDADE').AsInteger := wQuantidade;
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODEMP').AsInteger := wCodEmp;
+  dmDadosPEDSCI.tbItens.FieldByName('BDVLRUNITARIO').AsCurrency := wVlrUnit;
+  dmDadosPEDSCI.tbItens.FieldByName('BDVLRTOTAL').AsCurrency := wVlrTotal;
+
+  // ENVIA PARA O BANCO
+  dmDadosPEDSCI.tbItens.Post;
 
   // INFORMA QUE DEU CERTO
   Result := True;

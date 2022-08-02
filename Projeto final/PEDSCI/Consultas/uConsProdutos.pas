@@ -59,7 +59,10 @@ begin
   else if (Column.FieldName = 'BDDESCRICAO') then
      dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDDESCRICAO'
   else if (Column.FieldName = 'BDNCM') then
-     dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDNCM';
+     dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDNCM'
+  else if (Column.FieldName = 'BDVALOR') then
+     dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDVALOR';
+
 end;
 
 procedure TfrConsProduto.pFiltraCodigo;

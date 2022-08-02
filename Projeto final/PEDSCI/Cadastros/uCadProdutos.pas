@@ -17,6 +17,8 @@ type
     edCodigo: TEdit;
     edNCM: TEdit;
     lbAviso: TLabel;
+    lbValor: TLabel;
+    edValor: TEdit;
     procedure FormShow(Sender: TObject);
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
@@ -30,6 +32,7 @@ type
     function fVerificaCodigo() : Boolean;
     function fVerificaNCM() : Boolean;
     function fVerificaDescricao() : Boolean;
+    function fVerificaValor() : Boolean;
   public
     { Public declarations }
     function setTabela: TClientDataSet; override;
@@ -98,6 +101,8 @@ begin
      wPasse := False
   else if not(fVerificaNCM) then
      wPasse := False
+  else if not(fVerificaValor) then
+     wPasse := False
   else if not(fVerificaDescricao) then
      wPasse := False;
 
@@ -130,6 +135,7 @@ begin
          edCodigo.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDCODPROD').AsString;
          mDescricao.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString;
          edNCM.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDNCM').AsString;
+         edValor.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsString;
        end;
   except
   end;
@@ -197,12 +203,27 @@ begin
   end;
 end;
 
+function TfrCadProduto.fVerificaValor: Boolean;
+var
+  temp : Currency;
+begin
+  try
+    temp := StrToCurr(edValor.Text);
+    Result := True;
+  except
+    lbAviso.Caption := 'Valor inválido';
+    edValor.SetFocus;
+    Result := False;
+  end;
+end;
+
 procedure TfrCadProduto.pColetaDados;
 begin
   // COLETA OS DADOS NA TELA
   wTProduto.wCod := StrToInt(edCodigo.Text);
   wTProduto.wDescricao := mDescricao.Text;
   wTProduto.wNCM := StrToInt(edNCM.Text);
+  wTProduto.wValor := StrToCurr(edValor.Text);
 end;
 
 procedure TfrCadProduto.pLimpaDados;
@@ -211,6 +232,7 @@ begin
   wTProduto.wCod := 0;
   wTProduto.wDescricao := '';
   wTProduto.wNCM := 0;
+  wTProduto.wValor := 0;
 end;
 
 function TfrCadProduto.setTabela: TClientDataSet;

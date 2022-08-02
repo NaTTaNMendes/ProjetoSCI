@@ -19,7 +19,8 @@ uses
   uConsNotas in 'Consultas\uConsNotas.pas' {frConsNota},
   uFormPadraoRelatorioPEDSCI in '..\PEDSCIForms\uFormPadraoRelatorioPEDSCI.pas' {frFormPadraoRelatorioPEDSCI},
   uRelEmpresa in 'Relatorios\uRelEmpresa.pas' {frRelatorio},
-  uRelNota in 'Relatorios\uRelNota.pas' {frRelatorioNota};
+  uRelNota in 'Relatorios\uRelNota.pas' {frRelatorioNota},
+  uCadItens in 'Cadastros\uCadItens.pas' {frCadItens};
 
 {$R *.res}
 
