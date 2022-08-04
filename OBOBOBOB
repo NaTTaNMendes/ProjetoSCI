@@ -1,0 +1,35 @@
+[33mcommit 2740007b815a853cdafaffa17e3d5e916d88f573[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Prog 28 <prog28@sci10.local>
+Date:   Tue Aug 2 12:34:38 2022 -0300
+
+    Salvando arquivos antes da alteração no banco
+
+[33mcommit ad5e9b0a4bfd73cd6cd9671b53317c794f7e5d1d[m
+Author: Prog 28 <prog28@sci10.local>
+Date:   Mon Aug 1 15:49:45 2022 -0300
+
+    Inserindo filtros nos relatórios de notas fiscais
+
+[33mcommit c8fb1e0ab84a683d3e2f719b17ac4cd8d3e12afb[m
+Author: Prog 28 <prog28@sci10.local>
+Date:   Fri Jul 29 17:55:59 2022 -0300
+
+    Estou saindo do servico, parei na linha 280 da unit uRelNota
+
+[33mcommit ef3e75872c36e0091685860f1728a0e89c760cd4[m
+Author: Prog 28 <prog28@sci10.local>
+Date:   Fri Jul 29 17:09:40 2022 -0300
+
+    Implementando telas de relatório para empresas e geração de nota fiscal. No momento estou verificando a validade dos campos da tela de relatório de nota para a realização da filtragem
+
+[33mcommit 2706446c2589fec215a2afeec87d428b1c08b1ee[m
+Author: Prog 28 <prog28@sci10.local>
+Date:   Fri Jul 22 17:03:38 2022 -0300
+
+    Projeto sem as melhorias
+
+[33mcommit 3310a0d3e7278cf780a7e1709cd6f126a610e110[m
+Author: Prog 28 <prog28@sci10.local>
+Date:   Fri Jul 22 16:22:02 2022 -0300
+
+    Adicionando o projeto

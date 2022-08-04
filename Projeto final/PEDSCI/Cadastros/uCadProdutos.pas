@@ -19,6 +19,7 @@ type
     lbAviso: TLabel;
     lbValor: TLabel;
     edValor: TEdit;
+    rbErro: TRadioButton;
     procedure FormShow(Sender: TObject);
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
@@ -28,11 +29,14 @@ type
     procedure edCodigoExit(Sender: TObject);
   private
     { Private declarations }
-    wTProduto : TProduto;
-    function fVerificaCodigo() : Boolean;
-    function fVerificaNCM() : Boolean;
+    // VARÍAVEIS GLOBAIS
+    wTProduto                     : TProduto;
+
+    // FUNÇÕES
+    function fVerificaCodigo()    : Boolean;
+    function fVerificaNCM()       : Boolean;
     function fVerificaDescricao() : Boolean;
-    function fVerificaValor() : Boolean;
+    function fVerificaValor()     : Boolean;
   public
     { Public declarations }
     function setTabela: TClientDataSet; override;
@@ -53,6 +57,7 @@ uses uConsProdutos;
 procedure TfrCadProduto.btConsultarClick(Sender: TObject);
 begin
   inherited;
+  // CRIA E MOSTRA UMA TELA DE CONSULTA DE PRODUTO
   TfrConsProduto.Create(edCodigo);
 end;
 
@@ -62,13 +67,15 @@ var
 begin
   inherited;
 
-  // VERIFICA SE OS CAMPOS ESTÃO CORRETOS
+  // VERIFICA SE OS DADOS DOS CAMPOS ESTÃO CORRETOS
   wPasse := True;
-  if not(fVerificaCodigo) then
+  if not(fVerificaCodigo)         then
      wPasse := False
-  else if not(fVerificaNCM) then
+  else if not(fVerificaNCM)       then
      wPasse := False
   else if not(fVerificaDescricao) then
+     wPasse := False
+  else if not(fVerificaValor)     then
      wPasse := False;
 
   // EXECUTA A AÇÃO SE TUDO ESTIVER CERTO
@@ -82,6 +89,10 @@ begin
           begin
             ShowMessage('Deletado com sucesso');
             setLimpaCampos;
+            pLimpaDados;
+            edCodigo.SetFocus;
+            lbAviso.Caption := '';
+            rbErro.Checked := False;
           end
        else
           ShowMessage('Falha ao deletar');
@@ -97,11 +108,11 @@ begin
 
   // VERIFICA SE OS CAMPOS ESTÃO CORRETOS
   wPasse := True;
-  if not(fVerificaCodigo) then
+  if not(fVerificaCodigo)         then
      wPasse := False
-  else if not(fVerificaNCM) then
+  else if not(fVerificaNCM)       then
      wPasse := False
-  else if not(fVerificaValor) then
+  else if not(fVerificaValor)     then
      wPasse := False
   else if not(fVerificaDescricao) then
      wPasse := False;
@@ -114,7 +125,14 @@ begin
 
        // ENVIA PARA O BANCO
        if (wTProduto.fInserirProduto) then
-          ShowMessage('Dados inseridos')
+          begin
+            ShowMessage('Dados inseridos');
+            setLimpaCampos;
+            pLimpaDados;
+            edCodigo.SetFocus;
+            lbAviso.Caption := '';
+            rbErro.Checked := False;
+          end
        else
           ShowMessage('Falha ao inserir dados');
      end;
@@ -124,6 +142,7 @@ end;
 procedure TfrCadProduto.edCodigoExit(Sender: TObject);
 begin
   inherited;
+  // CASO O CÓDIGO SEJA INVÁLIDO NADA ACONTECE
   try
     // COLOCA FOCO NO CAMPO DE CÓDIGO
     dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDCODPROD';
@@ -132,10 +151,10 @@ begin
     if dmDadosPEDSCI.tbProdutos.FindKey([StrToInt(Trim(edCodigo.Text))]) then
        begin
          // INSERE OS DADOS DO BANCO NOS COMPONENTES
-         edCodigo.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDCODPROD').AsString;
+         edCodigo.Text   := dmDadosPEDSCI.tbProdutos.FieldByName('BDCODPROD').AsString;
          mDescricao.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString;
-         edNCM.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDNCM').AsString;
-         edValor.Text := dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsString;
+         edNCM.Text      := dmDadosPEDSCI.tbProdutos.FieldByName('BDNCM').AsString;
+         edValor.Text    := dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsString;
        end;
   except
   end;
@@ -145,7 +164,7 @@ end;
 procedure TfrCadProduto.FormShow(Sender: TObject);
 begin
   inherited;
-  // CRIA A VARIÁVEL
+  // CRIA O OBJETO PRODUTO
   wTProduto := TProduto.Create;
 
   // LIMPA OS CAMPOS
@@ -155,17 +174,21 @@ begin
   // PREPARA O LABEL DE AVISO
   lbAviso.Font.Color := clRed;
   lbAviso.Caption := '';
+  rbErro.Checked := False;
 end;
 
 function TfrCadProduto.fVerificaCodigo: Boolean;
 var
   temp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
     temp := StrToInt(edCodigo.Text);
     Result := True;
   except
+    // SE FALHAR INVALIDA O CAMPO
     lbAviso.Caption := 'Código inválido';
+    rbErro.Checked := True;
     edCodigo.SetFocus;
     Result := False;
   end;
@@ -173,15 +196,21 @@ end;
 
 function TfrCadProduto.fVerificaDescricao: Boolean;
 begin
+  // VERIFICA SE A DESCRIÇÃO NÃO ESTÁ VAZIA
+  mDescricao.Text := TrimLeft(mDescricao.Text);
+  mDescricao.Text := TrimRight(mDescricao.Text);
   if (mDescricao.Text = '') then
      begin
        lbAviso.Caption := 'Descrição inválida';
+       rbErro.Checked := True;
        mDescricao.SetFocus;
        Result := False;
      end
+  // VERIFICA SE A DESCRICAO NÃO É MUITO GRANDE
   else if (Length(mDescricao.Text) > 500) then
      begin
        lbAviso.Caption := 'Descrição muito grande';
+       rbErro.Checked := True;
        mDescricao.SetFocus;
        Result := False;
      end
@@ -191,13 +220,16 @@ end;
 
 function TfrCadProduto.fVerificaNCM: Boolean;
 var
-  temp : Integer;
+  wTemp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
-    temp := StrToInt(edNCM.Text);
+    wTemp := StrToInt(edNCM.Text);
     Result := True;
   except
+    // SE FALHAR INVALIDA O CAMPO
     lbAviso.Caption := 'NCM inválido';
+    rbErro.Checked := True;
     edNCM.SetFocus;
     Result := False;
   end;
@@ -205,13 +237,16 @@ end;
 
 function TfrCadProduto.fVerificaValor: Boolean;
 var
-  temp : Currency;
+  wTemp : Currency;
 begin
+  // TENTA CONVERTER A STRING PARA CURRENCY
   try
-    temp := StrToCurr(edValor.Text);
+    wTemp := StrToCurr(edValor.Text);
     Result := True;
   except
+    // SE FALHAR INVALIDA O CAMPO
     lbAviso.Caption := 'Valor inválido';
+    rbErro.Checked := True;
     edValor.SetFocus;
     Result := False;
   end;
@@ -220,19 +255,19 @@ end;
 procedure TfrCadProduto.pColetaDados;
 begin
   // COLETA OS DADOS NA TELA
-  wTProduto.wCod := StrToInt(edCodigo.Text);
-  wTProduto.wDescricao := mDescricao.Text;
-  wTProduto.wNCM := StrToInt(edNCM.Text);
-  wTProduto.wValor := StrToCurr(edValor.Text);
+  wTProduto.wCod        := StrToInt(edCodigo.Text);
+  wTProduto.wDescricao  := mDescricao.Text;
+  wTProduto.wNCM        := StrToInt(edNCM.Text);
+  wTProduto.wValor      := StrToCurr(edValor.Text);
 end;
 
 procedure TfrCadProduto.pLimpaDados;
 begin
   // REMOVE OS DADOS DA CLASSE TPRODUTO
-  wTProduto.wCod := 0;
-  wTProduto.wDescricao := '';
-  wTProduto.wNCM := 0;
-  wTProduto.wValor := 0;
+  wTProduto.wCod        := 0;
+  wTProduto.wDescricao  := '';
+  wTProduto.wNCM        := 0;
+  wTProduto.wValor      := 0;
 end;
 
 function TfrCadProduto.setTabela: TClientDataSet;

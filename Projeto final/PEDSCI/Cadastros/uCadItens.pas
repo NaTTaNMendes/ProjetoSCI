@@ -9,6 +9,14 @@ uses
   Data.DB, Datasnap.DBClient, System.Generics.Collections, uUtilPEDSCI;
 
 type
+  // ESSE OBJETO É UTILIZADO PARA GUARDAR DADOS DENTRO DO COMBOBOX E DO DICIONÁRIO
+  TObjProduto = class
+  public
+    wCodProd  : Integer;
+    wValUni   : Currency;
+    wQuant    : Integer;
+  end;
+
   TfrCadItens = class(TfrFormPadraoCadastroPEDSCI)
     lbProduto: TLabel;
     cbProduto: TComboBox;
@@ -16,23 +24,37 @@ type
     edQuantidade: TEdit;
     btAdicionar: TButton;
     btRemover: TButton;
-    mMemo: TMemo;
     lbAviso: TLabel;
+    lbProdutos: TListBox;
+    rbErro: TRadioButton;
     procedure FormShow(Sender: TObject);
     procedure btAdicionarClick(Sender: TObject);
     procedure btRemoverClick(Sender: TObject);
     procedure btOkClick(Sender: TObject);
   private
     { Private declarations }
-    wDicionario : TDictionary<String, Integer>;
-    wItens : TList<TItemNota>;
+    // VARIÁVEIS GLOBAIS
+    wDicionario : TDictionary<String, TObjProduto>;
+
+    // FUNÇÕES
     function fVerificaQuantidade() : Boolean;
-    procedure pConstruirMemo();
+
+    // PROCEDIMENTOS
+    procedure pMontrarList();
   public
     { Public declarations }
-    wCodNota : Integer;
-    wCodEmp : Integer;
+    // VARIÁVEIS GLOBAIS
+    wCodNota    : Integer;
+    wCodEmp     : Integer;
+    wCodCliente : Integer;
+    wAliq       : Currency;
+    wData       : TDate;
+
+    // FUNÇÕES
     function setTabela: TClientDataSet; override;
+
+    // PROCEDIMENTOS
+    procedure pPullBanco();
   end;
 
 var
@@ -40,158 +62,190 @@ var
 
 implementation
 
+uses uLancNota;
+
 {$R *.dfm}
 
 procedure TfrCadItens.btAdicionarClick(Sender: TObject);
 var
-  wI : Integer;
-  wQtdTemp : Integer;
-  wPasse : Boolean;
-  wKey : String;
+  wPasse  : Boolean;
+  wKey    : String;
 begin
   inherited;
 
+  // VERIFICA SE OS CAMPOS SÃO VÁLIDOS
   wPasse := True;
-
   if not(fVerificaQuantidade) then
      wPasse := False;
 
+  // CASO OS CAMPOS SEJAM VÁLIDOS
   if (wPasse) then
      begin
-       // CRIA UM DICIONÁRIO CONTENDO TODOS OS ITENS ESCOLHIDOS PELO USUÁRIO
+       // ADICIONA OS ITENS ESCOLHIDOS EM UM DICIONÁRIO
        if (wDicionario.ContainsKey(cbProduto.Text)) then
-          wDicionario.Items[cbProduto.Text] := wDicionario.Items[cbProduto.Text] + StrToInt(edQuantidade.Text)
+          wDicionario.Items[cbProduto.Text].wQuant := wDicionario[cbProduto.Text].wQuant + StrToInt(edQuantidade.Text)
        else
-          wDicionario.Add(cbProduto.Text, StrToInt(edQuantidade.Text));
+          begin
+            wDicionario.Add(cbProduto.Text, TObjProduto(cbProduto.Items.Objects[cbProduto.ItemIndex]));
+            wDicionario[cbProduto.Text].wQuant := StrToInt(edQuantidade.Text);
+          end;
 
        // REMOVE UM ITEM SE A QUANTIDADE DELE FOR MENOR OU IGUAL A ZERO
        for wKey in wDicionario.Keys do
          begin
-           if (wDicionario.Items[wKey] <= 0) then
+           if (wDicionario.Items[wKey].wQuant <= 0) then
               wDicionario.Remove(wKey);
          end;
 
-       pConstruirMemo;
+       // ATUALIZA O LIST VIEW
+       pMontrarList;
      end;
 
 end;
 
 procedure TfrCadItens.btOkClick(Sender: TObject);
 var
-  wItem : TItemNota;
-  wKey : String;
-  wCodItem : Integer;
-  wI : Integer;
+  wItem       : TItemNota;
+  wKey        : String;
+  wCodItem    : Integer;
+  wI          : Integer;
+  wObjeto     : TObjProduto;
+  wLancNota   : TfrLancNota;
+  wValorTotal : Currency;
 begin
   inherited;
 
-  // VERIFICA SE EXISTEM ITENS PARA ADICIONAR
   if (wDicionario.Count = 0) then
-     lbAviso.Caption := 'Nenhum item adicionado'
+     begin
+       lbAviso.Caption := 'Nenhum produto cadastrado';
+       rbErro.Checked := True;
+     end
   else
-     lbAviso.Caption := '';
+     begin
+       // CRIA O OBJETO WITEM
+       wItem := TItemNota.Create;
 
-  // CRIA O OBJETO WITEM
-  wItem := TItemNota.Create;
+       // COLETA OS DADOS JÁ PASSADOS PELA TELA DE LANÇAMENTO DE NOTA
+       wItem.wCodNota  := wCodNota;
+       wItem.wCodEmp   := wCodEmp;
 
-  // SETA O CÓDIGO DO ITEM DENTRO DA NOTA FISCAL
-  wCodItem := 0;
+       // DELETA OS ANTIGOS ITENS DA NOTA
+       wItem.fDeletarItem;
 
-  // PESQUISA O PRODUTO PELO NOME NO BANCO
-  dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDDESCRICAO';
-  dmDadosPEDSCI.tbProdutos.First;
+       // SETA O CÓDIGO DO ITEM DENTRO DA NOTA FISCAL E CRIA UM VALOR TOTAL INICIAL
+       wItem.wCodItem  := 0;
+       wValorTotal     := 0;
 
-  // PERCORRE CADA ITEM ADICIONADO NO DICIONARIO, ADICIONA EM UMA LISTA E DEPOIS INSERE NO BANCO
-  for wKey in wDicionario.Keys do
-    begin
+       // PERCORRE CADA ITEM CADASTRADO NO DICIONÁRIO
+       for wKey in wDicionario.Keys do
+         begin
+           // COLETA OS DADOS JÁ PASSADOS PELA TELA DE LANÇAMENTO DE NOTA
+           wItem.wCodNota  := wCodNota;
+           wItem.wCodEmp   := wCodEmp;
 
-      while not(dmDadosPEDSCI.tbProdutos.Eof) do
-        begin
-          if (dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString = wKey) then
-             begin
-               // COLETA OS DADOS JÁ PASSADOS PELA TELA PAI
-               wItem.wCodNota := wCodNota;
-               // INCREMENTA O CÓDIGO DO ITEM DENTRO DA NOTA FISCAL
-               wItem.wCodItem := wCodItem + 1;
-               // COMPLETA OS DADOS NECESSÁRIOS PARA A TABELA TITENSNOTA
-               wItem.wCodProd := dmDadosPEDSCI.tbProdutos.FieldByName('BDCODPROD').AsInteger;
-               wItem.wQuantidade := wDicionario[wKey];
-               wItem.wCodEmp := wCodEmp;
-               wItem.wVlrUnit := dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsCurrency;
-               wItem.wVlrTotal := wItem.wVlrUnit * wItem.wQuantidade;
+           // INCREMENTA O CÓDIGO DO ITEM DENTRO DA NOTA FISCAL
+           inc(wItem.wCodItem);
 
-               // ADICIONA O OBJETO COMPLETO NA LISTA
-               wItens.Add(wItem);
-             end;
+           // COLOCA OS DADOS DENTRO DO OBJETO TITENS
+           wItem.wCodProd    := wDicionario[wKey].wCodProd;
+           wItem.wQuantidade := wDicionario[wKey].wQuant;
+           wItem.wVlrUnit    := wDicionario[wKey].wValUni;
+           wItem.wVlrTotal   := wDicionario[wKey].wValUni * wDicionario[wKey].wQuant;
 
-          dmDadosPEDSCI.tbProdutos.Next;
-        end;
+           // COLETA O VALOR TOTAL GERAL DA NOTA
+           wValorTotal       := wValorTotal + wItem.wVlrTotal;
 
-    end;
+           // INSERE O ITEM NO BANCO
+           wItem.fInserirItem;
+         end;
 
-    // INSERE CADA ITEM NO BANCO
-    for wI := 0 to wItens.Count -1  do
-      begin
-        wItens[wI].fInserirItem;
-      end;
+       // CONFIRMA O UPDATE DO BANCO DE DADOS
+       dmDadosPEDSCI.tbItens.ApplyUpdates(0);
 
-    ShowMessage('Dados inseridos');
+       // RETORNA PARA O USUÁRIO QUE O PROCESSO OCORREU
+       ShowMessage('Dados inseridos');
+
+       // ATUALIZA A NOTA FISCAL
+       wLancNota := TfrLancNota.Create(nil);
+       wLancNota.Show;
+       wLancNota.wTotal := wValorTotal;
+       wLancNota.edCodigoNota.Text := IntToStr(wCodNota);
+       wLancNota.edCodEmpresa.Text := IntToStr(wCodEmp);
+       wLancNota.edCodCliente.SetFocus;
+       wLancNota.btOk.Click;
+
+       // FECHA A TELA DE CADASTRO DE ITENS
+       Self.Close;
+     end;
 
 end;
 
 procedure TfrCadItens.btRemoverClick(Sender: TObject);
 var
-  wI : Integer;
-  wQtdTemp : Integer;
-  wPasse : Boolean;
-  wKey : String;
+  wPasse  : Boolean;
+  wKey    : String;
 begin
   inherited;
 
+  // VERIFICA OS CAMPOS
   wPasse := True;
-
   if not(fVerificaQuantidade) then
      wPasse := False;
 
+  // CASO OS CAMPOS SEJAM VÁLIDOS
   if (wPasse) then
      begin
-       // CRIA UM DICIONÁRIO CONTENDO TODOS OS ITENS ESCOLHIDOS PELO USUÁRIO
+       // REMOVE A QUANTIDADE DO ITEM ESCOLHIDO NO DICIONÁRIO
        if (wDicionario.ContainsKey(cbProduto.Text)) then
-          wDicionario.Items[cbProduto.Text] := wDicionario.Items[cbProduto.Text] - StrToInt(edQuantidade.Text);
+          wDicionario.Items[cbProduto.Text].wQuant := wDicionario[cbProduto.Text].wQuant - StrToInt(edQuantidade.Text);
 
        // REMOVE UM ITEM SE A QUANTIDADE DELE FOR MENOR OU IGUAL A ZERO
        for wKey in wDicionario.Keys do
          begin
-           if (wDicionario.Items[wKey] <= 0) then
+           if (wDicionario.Items[wKey].wQuant <= 0) then
               wDicionario.Remove(wKey);
          end;
 
-       pConstruirMemo;
+       // ATUALIZA A LIST VIEW
+       pMontrarList;
      end;
 
 end;
 
 procedure TfrCadItens.FormShow(Sender: TObject);
+var
+  wObjProd: TObjProduto;
 begin
   inherited;
-  // CRIA O DICIONÁRIO PARA O MEMO TEXT
-  wDicionario := TDictionary<String, Integer>.Create;
+  // CRIA O DICIONÁRIO PARA O TLIST
+  wDicionario := TDictionary<String, TObjProduto>.Create;
 
-  // CRIA A LISTA COM OS ITENS DA NOTA
-  wItens := TList<TItemNota>.Create;
-
+  // TENTA COLETAR OS DADOS DO BANCO
   try
     // COLOCA FOCO NO CAMPO DE CÓDIGO
+    dmDadosPEDSCI.tbProdutos.Filtered := False;
     dmDadosPEDSCI.tbProdutos.indexFieldNames := 'BDCODPROD';
     dmDadosPEDSCI.tbProdutos.First;
 
     while not(dmDadosPEDSCI.tbProdutos.Eof) do
       begin
-        cbProduto.Items.Add(dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString);
+        // CRIA UM OBJETO COM OS DADOS DO PRODUTO
+        wObjProd          := TObjProduto.Create;
+        wObjProd.wCodProd := dmDadosPEDSCI.tbProdutos.FieldByName('BDCODPROD').AsInteger;
+        wObjProd.wValUni  := dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsCurrency;
+
+        // INSERE ESSE OBJETO NO COMBOBOX
+        cbProduto.Items.AddObject(dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString, wobjprod);
+
+        // AVANÇA PARA O PRÓXIMO PRODUTO CADASTRADO
         dmDadosPEDSCI.tbProdutos.Next;
       end;
 
+    // SETA O ÍNDICE ZERO PARA O COMBOBOX
     cbProduto.ItemIndex := 0;
+
+    // ATUALIZA A LIST VIEW
+    pMontrarList;
 
   except
     ShowMessage('Não existem produtos cadastrados no banco');
@@ -204,69 +258,108 @@ function TfrCadItens.fVerificaQuantidade: Boolean;
 var
   wTemp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
     wTemp := StrToInt(edQuantidade.Text);
     lbAviso.Caption := '';
+
+    // SE A QUANTIDADE FOR MENOR QUE ZERO UM ERRO SERÁ APONTADO
     if (wTemp <= 0) then
        raise Exception.Create('');
+
     Result := True;
   except
     lbAviso.Caption := 'Quantidade inválida';
+    rbErro.Checked := True;
     edQuantidade.SetFocus;
     Result := False;
   end;
 
 end;
 
-procedure TfrCadItens.pConstruirMemo;
+procedure TfrCadItens.pMontrarList;
 var
-  wI, wZeros : Integer;
-  wKey, wLinha : String;
-  wTotal : Currency;
-begin
-  mMemo.Clear;
-  mMemo.Lines.Add('PRODUTOS ADICIONADOS');
-  mMemo.Lines.Add('');
-  mMemo.Lines.Add('');
-  mMemo.Lines.Add('');
-  mMemo.Lines.Add('Produto                            Quantidade               Subtotal');
-  mMemo.Lines.Add('');
+  wKey        : String;
+  wQtdEspaco  : Integer;
+  wI          : Integer;
+  wSaida      : String;
 
+begin
+  // REINICIA O LIST VIEW E CRIA O CABEÇALHO
+  lbProdutos.Clear;
+  lbProdutos.AddItem('PRODUTOS CADASTRADOS', nil);
+  lbProdutos.AddItem('', nil);
+  lbProdutos.AddItem('', nil);
+  lbProdutos.AddItem('', nil);
+  lbProdutos.AddItem('PRODUTOS                                     QUANTIDADE     SUBTOTAL', nil);
+
+  // COLOCA CADA ITEM DO DICIONARIO NA LIST VIEW
   for wKey in wDicionario.Keys do
     begin
-      wLinha := wKey;
-      wZeros := 35 - Length(wLinha);
+      // ADICIONA O NOME DO PRODUTO
+      wSaida := wKey;
 
-      // COLOCA A QUANTIDADE DE ESPAÇOS NECESSÁRIA PARA ALINHAR O TEXTO
-      for wI := 1 to wZeros do
+      // ADICIONA OS ESPAÇAMENTOS
+      wQtdEspaco := 45 - Length(wSaida);
+      for wI := 1 to wQtdEspaco do
         begin
-          wLinha := wLinha + ' ';
+          wSaida := wSaida + ' ';
         end;
 
-      // INSERE A QUANTIDADE DISPONÍVEL NA LINHA
-      wLinha := wLinha + IntToStr(wDicionario[wKey]);
+      // ADICIONA A QUANTIDADE
+      wSaida := wSaida + IntToStr(wDicionario[wkey].wQuant);
 
-      // COLETA O PREÇO DO PRODUTO NO BANCO
-      dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDDESCRICAO';
-      if (dmDadosPEDSCI.tbProdutos.FindKey([wKey])) then
-         wTotal := dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsCurrency * wDicionario[wKey];
-
-      wZeros := 60 - Length(wLinha);
-      // COLOCA A QUANTIDADE DE ESPAÇOS NECESSÁRIA PARA ALINHAR O TEXTO
-      for wI := 1 to wZeros do
+      // ADICIONA OS ESPAÇAMENTOS
+      wQtdEspaco := 60 - Length(wSaida);
+      for wI := 1 to wQtdEspaco do
         begin
-          wLinha := wLinha + ' ';
+          wSaida := wSaida + ' ';
         end;
 
-      // INSERE O TOTAL DOS PRODUTOS NA LINHA
-      wLinha := wLinha + CurrToStr(wTotal);
+      // ADICIONA O SUBTOTAL DO ITEM
+      wSaida := wSaida + CurrToStr((wDicionario[wKey].wValUni * wDicionario[wKey].wQuant));
 
-      // ADICIONA A LINHA NO MEMO
-      mMemo.Lines.Add(wLinha);
-      mMemo.Lines.Add('');
+      // COLOCA O ITEM NA LISTA
+      lbProdutos.AddItem(wSaida, nil);
     end;
 
+end;
 
+procedure TfrCadItens.pPullBanco;
+var
+  wObjProd : TObjProduto;
+begin
+  // FILTRA OS ITENS COM O CÓDIGO DE EMPRESA E NOTA
+  dmDadosPEDSCI.tbItens.IndexFieldNames := 'BDCODITEM';
+  dmDadosPEDSCI.tbItens.Filtered        := False;
+  dmDadosPEDSCI.tbItens.Filter          := '(BDCODNOTA = ' + IntToStr(wCodNota) + ' and BDCODEMP = ' + IntToStr(wCodEmp) + ')';
+  dmDadosPEDSCI.tbItens.Filtered        := True;
+
+  // COLETA OS DADOS DO BANCO E COLOCA NO DICIONARIO
+  dmDadosPEDSCI.tbItens.First;
+  while not(dmDadosPEDSCI.tbItens.Eof) do
+    begin
+      // CRIA O OBJETO
+      wObjProd          := TObjProduto.Create;
+      wObjProd.wCodProd := dmDadosPEDSCI.tbItens.FieldByName('BDCODPROD').AsInteger;
+      wObjProd.wValUni  := dmDadosPEDSCI.tbItens.FieldByName('BDVLRUNITARIO').AsCurrency;
+      wObjProd.wQuant   := dmDadosPEDSCI.tbItens.FieldByName('BDQUANTIDADE').AsInteger;
+
+      // COLETA O NOME DO PRODUTO
+      dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDCODPROD';
+      dmDadosPEDSCI.tbProdutos.Filtered        := False;
+      dmDadosPEDSCI.tbProdutos.Filter          := '(BDCODPROD = ' + IntToStr(wObjProd.wCodProd) + ')';
+      dmDadosPEDSCI.tbProdutos.Filtered        := True;
+
+      // ADICIONA NO DICIONARIO
+      wDicionario.Add(dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString, wObjProd);
+
+      // AVANÇA PARA O PRÓXIMO ITEM
+      dmDadosPEDSCI.tbItens.Next;
+    end;
+
+  // ATUALIZA A LIST VIEW
+  pMontrarList;
 end;
 
 function TfrCadItens.setTabela: TClientDataSet;

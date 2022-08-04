@@ -33,6 +33,7 @@ implementation
 
 procedure TdmConnectionPEDSCI.DataModuleCreate(Sender: TObject);
 begin
+  // CONECTA O SISTEMA AO BANCO DE DADOS
   SQLConnectionPEDSCI.Close;
   SQLConnectionPEDSCI.LibraryName := 'dbxfb.dll';
   SQLConnectionPEDSCI.VendorLib := 'fbclient.dll';
@@ -51,10 +52,12 @@ begin
   SQLConnectionPEDSCI.Params.Values['IsolationLevel'] := 'ReadCommitted';
   SQLConnectionPEDSCI.Params.Values['Trim Char'] := 'False';
 
+  // VERIFICA SE O ARQUIVO QUE CONTÉM A INFORMAÇÃO SOBRE A LOCALIZAÇÃO DO BANCO EXISTE
   if FileExists(SQLConnectionPEDSCI.Params.Values['Database']) then
      SQLConnectionPEDSCI.Open
   else
   begin
+    // INFORMA QUE NÃO ENCONTROU O BANCO DE DADOS E ENCERRA A APLICAÇÃO
     MessageDlg('Não foi possível conectar no banco "' + SQLConnectionPEDSCI.Params.Values['Database'] + '".', mtWarning, [mbOK], 0);
     Application.Terminate;
   end;
@@ -62,6 +65,7 @@ end;
 
 procedure TdmConnectionPEDSCI.DataModuleDestroy(Sender: TObject);
 begin
+  // FECHA A CONEXÃO COM O BANCO DE DADOS
   SQLConnectionPEDSCI.Close;
 end;
 

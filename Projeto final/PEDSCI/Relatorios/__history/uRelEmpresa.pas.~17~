@@ -1,0 +1,138 @@
+unit uRelEmpresa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormPadraoRelatorioPEDSCI, Data.FMTBcd,
+  Data.DB, Data.SqlExpr, frxClass, frxDBSet, frxExportCSV, frxExportDOCX,
+  frxExportXLSX, frxExportBaseDialog, frxExportPDF, frxDesgn, System.ImageList,
+  Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin, Vcl.StdCtrls, Vcl.ExtCtrls, udmDadosPEDSCI;
+
+type
+  TfrRelatorio = class(TfrFormPadraoRelatorioPEDSCI)
+    lbCodigoEntre: TLabel;
+    edCodInicial: TEdit;
+    lbE: TLabel;
+    edCodFinal: TEdit;
+    lbCodMaior: TLabel;
+    edCodMaior: TEdit;
+    lbCodMenor: TLabel;
+    edCodMenor: TEdit;
+    lbNenhum: TLabel;
+    rgCodigo: TRadioGroup;
+    lbFiltroCodigo: TLabel;
+    lbFiltros: TLabel;
+    cbUF: TComboBox;
+    lbFiltroEstado: TLabel;
+    lbAviso: TLabel;
+    procedure btVisualizarClick(Sender: TObject);
+    procedure rgCodigoClick(Sender: TObject);
+  private
+    { Private declarations }
+    function fVerificaCodEntre : Boolean;
+    function fVerificaCodMaior : Boolean;
+    function fVerificaCodMenor : Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  frRelatorio: TfrRelatorio;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrRelatorio.btVisualizarClick(Sender: TObject);
+begin
+  inherited;
+  // FECHA O ANTIGO QUERY QUE ESTAVA NO COMPONENTE
+  SQLQueryPadrao.Close;
+  // LIMPA O ANTIGO QUERY
+  SQLQueryPadrao.SQL.Clear;
+  // INFORMA A NOVA QUERY QUE ELE DEVE REALIZAR
+  SQLQueryPadrao.SQL.Add('select emp.*, uf.BDSIGLAUF from TEMPRESA as emp inner join TUF as uf on (emp.BDCODUF = uf.BDCODUF)');
+
+
+  SQLQueryPadrao.SQL.Add('order by BDCODEMP');
+  // EXECUTA A QUERY (OPEN PARA SELECT, EXEC PARA INSERCAO OU DELECAO DE DADOS)
+  SQLQueryPadrao.Open;
+end;
+
+function TfrRelatorio.fVerificaCodEntre: Boolean;
+begin
+
+end;
+
+function TfrRelatorio.fVerificaCodMaior: Boolean;
+begin
+
+end;
+
+function TfrRelatorio.fVerificaCodMenor: Boolean;
+var
+  wTemp : Integer;
+begin
+  try
+    wTemp := StrToInt(edCodMenor.Text);
+
+    dmDadosPEDSCI.tbEmpresas.IndexFieldNames := 'BDCODEMP';
+    dmDadosPEDSCI.tbEmpresas.Filtered := False;
+    dmDadosPEDSCI.tbEmpresas.Filter := '(BDCODEMP < ' + edCodMenor.Text + ')';
+    dmDadosPEDSCI.tbEmpresas.Filtered := True;
+
+    if (dmDadosPEDSCI.tbEmpresas.RecordCount = 0) then
+       begin
+         lbAviso.Caption := 'Empresa não existe';
+         edCodMenor.SetFocus;
+         Result := False;
+         Exit;
+       end;
+
+    Result := True;
+
+  except
+    lbAviso.Caption := 'Código inválido';
+    edCodInicial.SetFocus;
+    Result := False;
+  end;
+end;
+
+procedure TfrRelatorio.rgCodigoClick(Sender: TObject);
+begin
+  inherited;
+  if (rgCodigo.ItemIndex = 0) then
+     begin
+       edCodInicial.Enabled := False;
+       edCodFinal.Enabled   := False;
+       edCodMaior.Enabled   := False;
+       edCodMenor.Enabled   := False;
+     end
+  else if (rgCodigo.ItemIndex = 1) then
+     begin
+       edCodInicial.Enabled := True;
+       edCodFinal.Enabled   := True;
+       edCodMaior.Enabled   := False;
+       edCodMenor.Enabled   := False;
+       edCodInicial.SetFocus;
+     end
+  else if (rgCodigo.ItemIndex = 2) then
+     begin
+       edCodInicial.Enabled := False;
+       edCodFinal.Enabled   := False;
+       edCodMaior.Enabled   := True;
+       edCodMenor.Enabled   := False;
+       edCodMaior.SetFocus;
+     end
+  else if (rgCodigo.ItemIndex = 3) then
+     begin
+       edCodInicial.Enabled := False;
+       edCodFinal.Enabled   := False;
+       edCodMaior.Enabled   := False;
+       edCodMenor.Enabled   := True;
+       edCodMenor.SetFocus;
+     end;
+end;
+
+end.

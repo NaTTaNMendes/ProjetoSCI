@@ -22,6 +22,7 @@ type
     edAliquota: TEdit;
     lbAviso: TLabel;
     btItens: TButton;
+    rbErro: TRadioButton;
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure btConsultarClick(Sender: TObject);
@@ -32,17 +33,21 @@ type
     procedure btItensClick(Sender: TObject);
   private
     { Private declarations }
+    // VARIÁVEIS GLOBAIS
     wTNota : TNota;
-    function fVerificaCodigoNota() : Boolean;
+
+    // FUNÇÕES
+    function fVerificaCodigoNota()    : Boolean;
     function fVerificaCodigoCliente() : Boolean;
     function fVerificaCodigoEmpresa() : Boolean;
-    //function fVerificaCodigoProduto() : Boolean;
-    //function fVerificaValor() : Boolean;
-    function fVerificaAliquota() : Boolean;
-    //function fVerificaQuantidade : Boolean;
+    function fVerificaAliquota()      : Boolean;
   public
     { Public declarations }
-    function setTabela: TClientDataSet; override;
+    // VARIÁVEIS GLOBAIS
+    wTotal : Currency;
+
+    //FUNÇÕES
+    function setTabela                : TClientDataSet; override;
   end;
 
 var
@@ -58,6 +63,7 @@ uses uConsNotas;
 procedure TfrLancNota.btConsultarClick(Sender: TObject);
 begin
   inherited;
+  // CRIA A MOSTRA UMA TELA DE CONSULTA DE NOTAS FISCAIS
   TfrConsNota.Create(edCodigoNota);
 end;
 
@@ -69,20 +75,14 @@ begin
 
   // VERIFICA SE OS DADOS SÃO VÁLIDOS
   wPasse := True;
-  if not(fVerificaCodigoNota) then
+  if not(fVerificaCodigoNota)         then
      wPasse := False
   else if not(fVerificaCodigoCliente) then
      wPasse := False
   else if not(fVerificaCodigoEmpresa) then
      wPasse := False
-  //else if not(fVerificaCodigoProduto) then
-  //  wPasse := False
-  //else if not(fVerificaValor) then
-  //   wPasse := False
-  else if not(fVerificaAliquota) then
+  else if not(fVerificaAliquota)      then
      wPasse := False;
-  //else if not(fVerificaQuantidade) then
-  //   wPasse := False;
 
   if (wPasse) then
      begin
@@ -94,6 +94,9 @@ begin
           begin
             ShowMessage('Deletado com sucesso');
             setLimpaCampos;
+            edCodigoNota.SetFocus;
+            lbAviso.Caption := '';
+            rbErro.Checked := False;
           end
        else
           ShowMessage('Falha ao deletar');
@@ -104,13 +107,28 @@ end;
 procedure TfrLancNota.btItensClick(Sender: TObject);
 var
   wCadItens : TfrCadItens;
+  wPasse    : Boolean;
 begin
   inherited;
-  wCadItens := TfrCadItens.Create(Self);
-  wCadItens.Show;
-  wCadItens.wCodNota := StrToInt(edCodigoNota.Text);
-  wCadItens.wCodEmp := StrToInt(edCodEmpresa.Text);
 
+  // CADASTRA OS VALORES DA NOTA
+  btOk.Click;
+
+  // SE NÃO OCORRERAM ERROS, UMA TELA DE CADASTRO DE ITENS DA NOTA SERÁ ABERTA
+  if (lbAviso.Caption = '') then
+     begin
+       wCadItens := TfrCadItens.Create(nil);
+       wCadItens.Show;
+       wCadItens.wCodNota := StrToInt(edCodigoNota.Text);
+       wCadItens.wCodEmp := StrToInt(edCodEmpresa.Text);
+       wCadItens.wCodCliente := StrToInt(edCodCliente.Text);
+       wCadItens.wAliq := StrToCurr(edAliquota.Text);
+       wCadItens.wData := dtpData.Date;
+       wCadItens.pPullBanco;
+
+       // FECHA A TELA ATUAL
+       Self.Close;
+     end;
 end;
 
 procedure TfrLancNota.btOkClick(Sender: TObject);
@@ -121,20 +139,14 @@ begin
 
   // VERIFICA SE OS DADOS SÃO VÁLIDOS
   wPasse := True;
-  if not(fVerificaCodigoNota) then
+  if not(fVerificaCodigoNota)         then
      wPasse := False
   else if not(fVerificaCodigoCliente) then
      wPasse := False
   else if not(fVerificaCodigoEmpresa) then
      wPasse := False
-  //else if not(fVerificaCodigoProduto) then
-  //   wPasse := False
-  //else if not(fVerificaValor) then
-  //   wPasse := False
-  else if not(fVerificaAliquota) then
+  else if not(fVerificaAliquota)      then
      wPasse := False;
-  //else if not(fVerificaQuantidade) then
-  //  wPasse := False;
 
   if (wPasse) then
      begin
@@ -143,7 +155,11 @@ begin
 
        // ENVIA PARA O BANCO
        if (wTNota.fInserirNota) then
-          ShowMessage('Dados inseridos')
+          begin
+            pLimpaDados;
+            lbAviso.Caption := '';
+            rbErro.Checked := False;
+          end
        else
           ShowMessage('Falha ao inserir dados');
      end;
@@ -153,31 +169,28 @@ procedure TfrLancNota.edCodigoNotaExit(Sender: TObject);
 begin
   inherited;
 
-  if (fVerificaCodigoNota) then
-     begin
-       // COLOCA FOCO NO CAMPO DE CÓDIGO
-       dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODNOTA';
+  // COLETA OS DADOS DA NOTA NO BANCO SE ELA JÁ EXISTIR, CASO O CÓDIGO SEJA INVÁLIDO NADA ACONTECERÁ
+  try
+    // COLOCA FOCO NO CAMPO DE CÓDIGO
+    dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODNOTA';
 
-       // VERIFICA SE JÁ EXISTE ALGUM DADO NO BANCO
-       if dmDadosPEDSCI.tbNotas.FindKey([StrToInt(Trim(edCodigoNota.Text))]) then
-          begin
-            // INSERE OS DADOS DO BANCO NOS COMPONENTES
-            edCodigoNota.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODNOTA').AsString;
-            edCodCliente.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODCLI').AsString;
-            edCodEmpresa.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODEMP').AsString;
-            //edCodProd.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDCODPROD').AsString;
-            //edQuantidade.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDQTD').AsString;
-            dtpData.DateTime := dmDadosPEDSCI.tbNotas.FieldByName('BDDATAEMISSAO').AsDateTime;
-            //edValor.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDVLRNOTA').AsString;
-            edAliquota.Text := dmDadosPEDSCI.tbNotas.FieldByName('BDALIQICMS').AsString;
-          end;
-     end;
-
+    // VERIFICA SE JÁ EXISTE ALGUM DADO NO BANCO
+    if dmDadosPEDSCI.tbNotas.FindKey([StrToInt(Trim(edCodigoNota.Text))]) then
+       begin
+         // INSERE OS DADOS DO BANCO NOS COMPONENTES
+         edCodigoNota.Text  := dmDadosPEDSCI.tbNotas.FieldByName('BDCODNOTA').AsString;
+         edCodCliente.Text  := dmDadosPEDSCI.tbNotas.FieldByName('BDCODCLI').AsString;
+         edCodEmpresa.Text  := dmDadosPEDSCI.tbNotas.FieldByName('BDCODEMP').AsString;
+         dtpData.DateTime   := dmDadosPEDSCI.tbNotas.FieldByName('BDDATAEMISSAO').AsDateTime;
+         edAliquota.Text    := dmDadosPEDSCI.tbNotas.FieldByName('BDALIQICMS').AsString;
+       end;
+  except
+  end;
 end;
 
 procedure TfrLancNota.FormShow(Sender: TObject);
 begin
-  // CRIA A CLASSE
+  // CRIA O OBJETO NOTA
   wTNota := TNota.Create;
 
   // LIMPA OS CAMPOS
@@ -187,17 +200,21 @@ begin
   // CONFIGURA O LABEL DE AVISO
   lbAviso.Font.Color := clRed;
   lbAviso.Caption := '';
+  rbErro.Checked := False;
 end;
 
 function TfrLancNota.fVerificaAliquota: Boolean;
 var
   wTemp : Currency;
 begin
+  // TENTA CONVERTER A STRING PARA CURRENCY
   try
     wTemp := StrToCurr(edAliquota.Text);
+    // VERIFICA SE O VALOR NÃO É ABSURDO
     if (wTemp > 100) or (wTemp < 0) then
        begin
          lbAviso.Caption := 'Alíquota inválida';
+         rbErro.Checked := True;
          edAliquota.SetFocus;
          Result := False;
          Exit;
@@ -206,6 +223,7 @@ begin
        Result := True;
   except
     lbAviso.Caption := 'Alíquota inválida';
+    rbErro.Checked := True;
     edAliquota.SetFocus;
     Result := False;
   end;
@@ -215,6 +233,7 @@ function TfrLancNota.fVerificaCodigoCliente: Boolean;
 var
   wTemp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
     wTemp := StrToInt(edCodCliente.Text);
     // VERIFICA SE O CLIENTE EXISTE
@@ -224,10 +243,13 @@ begin
     else
        begin
          lbAviso.Caption := 'Cliente não existe';
+         rbErro.Checked := True;
+         edCodCliente.SetFocus;
          Result := False;
        end;
   except
     lbAviso.Caption := 'Código de cliente inválido';
+    rbErro.Checked := True;
     edCodCliente.SetFocus;
     Result := False;
   end;
@@ -237,6 +259,7 @@ function TfrLancNota.fVerificaCodigoEmpresa: Boolean;
 var
   wTemp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
     wTemp := StrToInt(edCodEmpresa.Text);
     // VERIFICA SE A EMRPESA EXISTE
@@ -246,11 +269,14 @@ begin
     else
        begin
          lbAviso.Caption := 'Empresa não existe';
+         rbErro.Checked := True;
+         edCodEmpresa.SetFocus;
          Result := False;
        end;
 
   except
     lbAviso.Caption := 'Código de empresa inválido';
+    rbErro.Checked := True;
     edCodEmpresa.SetFocus;
     Result := False;
   end;
@@ -260,98 +286,39 @@ function TfrLancNota.fVerificaCodigoNota: Boolean;
 var
   wTemp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
     wTemp := StrToInt(edCodigoNota.Text);
     Result := True;
   except
     lbAviso.Caption := 'Código inválido';
+    rbErro.Checked := True;
     edCodigoNota.SetFocus;
     Result := False;
   end;
 end;
-{
-function TfrLancNota.fVerificaCodigoProduto: Boolean;
-var
-  wTemp : Integer;
-begin
-  try
-    wTemp := StrToInt(edCodProd.Text);
-    // VERIFICA SE O PRODUTO EXISTE
-    dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDCODPROD';
-    if (dmDadosPEDSCI.tbProdutos.FindKey([wTemp])) then
-       Result := True
-    else
-       begin
-         lbAviso.Caption := 'Produto não existe';
-         Result := False;
-       end;
-  except
-    lbAviso.Caption := 'Código de produto inválido';
-    edCodProd.SetFocus;
-    Result := False;
-  end;
-end;
 
-function TfrLancNota.fVerificaQuantidade: Boolean;
-var
-  wTemp : Integer;
-begin
-  try
-    wTemp := StrToInt(edQuantidade.Text);
-    Result := True;
-  except
-    lbAviso.Caption := 'Quantidade inválida';
-    edQuantidade.SetFocus;
-    Result := False;
-  end;
-end;
-
-function TfrLancNota.fVerificaValor: Boolean;
-var
-  wTemp : Currency;
-begin
-  try
-    wTemp := StrToCurr(edValor.Text);
-    if (wTemp < 0) then
-       begin
-         lbAviso.Caption := 'Valor inválido';
-         edValor.SetFocus;
-         Result := False;
-         Exit;
-       end
-    else
-       Result := True;
-  except
-    lbAviso.Caption := 'Valor inválido';
-    edValor.SetFocus;
-    Result := False;
-  end;
-end;
-}
 procedure TfrLancNota.pColetaDados;
 begin
   // COLETA OS DADOS
-  wTNota.wCod := StrToInt(edCodigoNota.Text);
-  wTNota.wCodCli := StrToInt(edCodCliente.Text);
-  wTNota.wCodEmp := StrToInt(edCodEmpresa.Text);
-  //wTNota.wCodProd := StrToInt(edCodProd.Text);
-  wTNota.wData := dtpData.Date;
-  //wTNota.wQuantidade := StrToInt(edQuantidade.Text);
-  wTNota.wAliquota := StrToCurr(edAliquota.Text);
-  //wTNota.wValor := StrToCurr(edValor.Text);
+  wTNota.wCod       := StrToInt(edCodigoNota.Text);
+  wTNota.wCodCli    := StrToInt(edCodCliente.Text);
+  wTNota.wCodEmp    := StrToInt(edCodEmpresa.Text);
+  wTNota.wData      := dtpData.Date;
+  wTNota.wAliquota  := StrToCurr(edAliquota.Text);
+  wTNota.wValor     := wTotal;
 end;
 
 procedure TfrLancNota.pLimpaDados;
 begin
   // LIMPA A CLASSE TNOTA
-  wTNota.wCod := 0;
-  wTNota.wCodCli := 0;
-  wTNota.wCodEmp := 0;
-  wTNota.wCodProd := 0;
-  wTNota.wData := 0;
-  wTNota.wQuantidade := 0;
-  wTNota.wAliquota := 0;
-  wTNota.wValor := 0;
+  wTNota.wCod       := 0;
+  wTNota.wCodCli    := 0;
+  wTNota.wCodEmp    := 0;
+  wTNota.wData      := 0;
+  wTNota.wAliquota  := 0;
+  wTNota.wValor     := 0;
+  wTotal            := 0;
 end;
 
 function TfrLancNota.setTabela: TClientDataSet;

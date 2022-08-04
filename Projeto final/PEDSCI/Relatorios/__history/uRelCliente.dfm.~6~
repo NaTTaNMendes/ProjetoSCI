@@ -1,0 +1,115 @@
+inherited frRelatorioCliente: TfrRelatorioCliente
+  Caption = 'Relat'#243'rio de Clientes'
+  ClientHeight = 272
+  ClientWidth = 413
+  ExplicitWidth = 429
+  ExplicitHeight = 311
+  PixelsPerInch = 96
+  TextHeight = 13
+  object lbCodigoEntre: TLabel [0]
+    Left = 51
+    Top = 132
+    Width = 71
+    Height = 13
+    Caption = 'C'#243'digos entre:'
+  end
+  object lbE: TLabel [1]
+    Left = 173
+    Top = 132
+    Width = 6
+    Height = 13
+    Caption = 'e'
+  end
+  object lbCodMaior: TLabel [2]
+    Left = 51
+    Top = 164
+    Width = 87
+    Height = 13
+    Caption = 'C'#243'digo maior que:'
+  end
+  object lbCodMenor: TLabel [3]
+    Left = 51
+    Top = 200
+    Width = 94
+    Height = 13
+    Caption = 'C'#243'digo menor que: '
+  end
+  object lbNenhum: TLabel [4]
+    Left = 51
+    Top = 104
+    Width = 39
+    Height = 13
+    Caption = 'Nenhum'
+  end
+  object lbFiltroCodigo: TLabel [5]
+    Left = 16
+    Top = 62
+    Width = 68
+    Height = 13
+    Caption = 'Filtrar C'#243'digo:'
+  end
+  object lbFiltros: TLabel [6]
+    Left = 219
+    Top = 44
+    Width = 42
+    Height = 13
+    Caption = 'FILTROS'
+  end
+  object lbAviso: TLabel [7]
+    Left = 16
+    Top = 248
+    Width = 3
+    Height = 13
+  end
+  inherited tbFerramentas: TToolBar
+    Width = 413
+  end
+  object edCodInicial: TEdit [9]
+    Left = 123
+    Top = 129
+    Width = 44
+    Height = 21
+    TabOrder = 1
+  end
+  object edCodFinal: TEdit [10]
+    Left = 185
+    Top = 129
+    Width = 44
+    Height = 21
+    TabOrder = 2
+  end
+  object edCodMaior: TEdit [11]
+    Left = 144
+    Top = 161
+    Width = 44
+    Height = 21
+    TabOrder = 3
+  end
+  object edCodMenor: TEdit [12]
+    Left = 144
+    Top = 197
+    Width = 44
+    Height = 21
+    TabOrder = 4
+  end
+  object rgCodigo: TRadioGroup [13]
+    Left = 16
+    Top = 81
+    Width = 29
+    Height = 140
+    Color = clBtnFace
+    Ctl3D = True
+    ItemIndex = 0
+    Items.Strings = (
+      ' '
+      ' '
+      ' '
+      ' ')
+    ParentColor = False
+    ParentCtl3D = False
+    TabOrder = 5
+  end
+  inherited frxReportLayout: TfrxReport
+    ScriptText.Strings = ()
+  end
+end

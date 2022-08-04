@@ -21,6 +21,7 @@ type
     lbAviso: TLabel;
     mskTelefone: TMaskEdit;
     mskCNPJ: TMaskEdit;
+    rbErro: TRadioButton;
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure btConsultarClick(Sender: TObject);
@@ -30,11 +31,14 @@ type
     procedure edCodigoExit(Sender: TObject);
   private
     { Private declarations }
-    wTEmpresa : TEmpresa;
-    function fVerificaCodigo() : Boolean;
-    function fVerificaCNPJ() : Boolean;
-    function fVerificaNome() : Boolean;
-    function fVerificaTelefone() : Boolean;
+    // VARIÁVEIS GLOBAIS
+    wTEmpresa                     : TEmpresa;
+
+    // FUNÇÕES
+    function fVerificaCodigo()    : Boolean;
+    function fVerificaCNPJ()      : Boolean;
+    function fVerificaNome()      : Boolean;
+    function fVerificaTelefone()  : Boolean;
   public
     { Public declarations }
     function setTabela: TClientDataSet; override;
@@ -42,7 +46,6 @@ type
 
 var
   frCadEmpresas: TfrCadEmpresas;
-    edTelefone: TEdit;
 
 implementation
 
@@ -53,6 +56,7 @@ uses udmDadosPEDSCI, uConsEmpresas;
 procedure TfrCadEmpresas.btConsultarClick(Sender: TObject);
 begin
   inherited;
+  // CRIA E MOSTRA A TELA DE CONSULTA DE EMPRESAS
   TfrConsEmpresas.Create(edCodigo);
 end;
 
@@ -62,17 +66,18 @@ var
 begin
   inherited;
 
-  // VERIFICA SE OS DADOS ESTÃO CORRETOS
+  // VERIFICA SE OS DADOS NOS CAMPOS ESTÃO CORRETOS
   wPasse := True;
-  if not(fVerificaCodigo) then
+  if not(fVerificaCodigo)        then
      wPasse := False
-  else if not(fVerificaCNPJ) then
+  else if not(fVerificaCNPJ)     then
      wPasse := False
-  else if not(fVerificaNome) then
+  else if not(fVerificaNome)     then
      wPasse := False
   else if not(fVerificaTelefone) then
      wPasse := False;
 
+  // CASO OS DADOS ESTEJAM CORRETOS
   if (wPasse) then
      begin
        // COLETA OS DADOS
@@ -83,6 +88,8 @@ begin
           begin
             ShowMessage('Deletado com sucesso');
             setLimpaCampos;
+            pLimpaDados;
+            edCodigo.SetFocus;
           end
        else
           ShowMessage('Falha ao deletar');
@@ -96,17 +103,18 @@ var
 begin
   inherited;
 
-  // VERIFICA SE OS DADOS ESTÃO CORRETOS
+  // VERIFICA SE OS DADOS NOS CAMPOS ESTÃO CORRETOS
   wPasse := True;
-  if not(fVerificaCodigo) then
+  if not(fVerificaCodigo)        then
      wPasse := False
-  else if not(fVerificaCNPJ) then
+  else if not(fVerificaCNPJ)     then
      wPasse := False
-  else if not(fVerificaNome) then
+  else if not(fVerificaNome)     then
      wPasse := False
   else if not(fVerificaTelefone) then
      wPasse := False;
 
+  // CASO OS DADOS DOS CAMPOS ESTEJAM CORRETOS
   if (wPasse) then
      begin
        // COLETA OS DADOS
@@ -117,7 +125,10 @@ begin
           begin
             ShowMessage('Dados inseridos');
             lbAviso.Caption := '';
+            rbErro.Checked := False;
             pLimpaDados;
+            setLimpaCampos;
+            edCodigo.SetFocus;
           end
        else
           ShowMessage('Falha ao inserir dados');
@@ -137,11 +148,11 @@ begin
     if dmDadosPEDSCI.tbEmpresas.FindKey([StrToInt(edCodigo.Text)]) then
        begin
          // INSERE OS DADOS DO BANCO NOS COMPONENTES
-         edCodigo.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODEMP').AsString;
-         edNome.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDNOMEEMP').AsString;
-         mskCNPJ.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCNPJCPF').AsString;
+         edCodigo.Text    := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODEMP').AsString;
+         edNome.Text      := dmDadosPEDSCI.tbEmpresas.FieldByName('BDNOMEEMP').AsString;
+         mskCNPJ.Text     := dmDadosPEDSCI.tbEmpresas.FieldByName('BDCNPJCPF').AsString;
          mskTelefone.Text := dmDadosPEDSCI.tbEmpresas.FieldByName('BDTELEFONE').AsString;
-         cbUF.ItemIndex := (dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODUF').AsInteger) - 1;
+         cbUF.ItemIndex   := (dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODUF').AsInteger) - 1;
        end;
   except
   end;
@@ -151,7 +162,7 @@ end;
 procedure TfrCadEmpresas.FormShow(Sender: TObject);
 begin
   inherited;
-  // CRIA A VARIÁVEL EMPRESA
+  // CRIA O OBJETO EMPRESA
   wTEmpresa := TEmpresa.Create();
 
   // LIMPA OS CAMPOS
@@ -161,46 +172,54 @@ begin
   // PREPARA O LABEL DE AVISO
   lbAviso.Font.Color := clRed;
   lbAviso.Caption := '';
+  rbErro.Checked := False;
 end;
 
 function TfrCadEmpresas.fVerificaCNPJ: Boolean;
 var
-  wTemp, wValorCalculado : String;
-  wQTD, wI : Integer;
+  wTemp : String;
+  wVlr  : String;
+  wQtd  : Integer;
+  wI    : Integer;
 begin
 
-  // VERIFICA SE O CPF ESTÁ COMPLETO
-  wQTD := 0;
+  // COLETA A QUANTIDADE DE ESPAÇOS EM BRANCO NO CAMPO DE CNPJ
+  wQtd := 0;
   for wI := 0 to Length(mskCNPJ.Text) do
     begin
       if (mskCNPJ.Text[wI] = ' ') then
-         wQTD := wQTD + 1;
+         wQtd := wQtd + 1;
     end;
 
-  if (wQTD > 0) then
+  // SE HOUVEREM ESPAÇOS EM BRANCO, O CAMPO É INVALIDADO
+  if (wQtd > 0) then
      begin
        lbAviso.Caption := 'CNPJ inválido';
+       rbErro.Checked := True;
        mskCNPJ.SetFocus;
        Result := False;
        Exit;
      end;
 
-  // COLETA OS CARACTERES NECESSÁRIOS E VERIFICA O CNPJ
-  wTemp := Copy(mskCNPJ.Text, 1, 2);
-  wTemp := wTemp + Copy(mskCNPJ.Text, 4, 3);
-  wTemp := wTemp + Copy(mskCNPJ.Text, 8, 3);
+  // COLETA OS CARACTERES NECESSÁRIOS
+  wTemp :=         Copy(mskCNPJ.Text,  1, 2);
+  wTemp := wTemp + Copy(mskCNPJ.Text,  4, 3);
+  wTemp := wTemp + Copy(mskCNPJ.Text,  8, 3);
   wTemp := wTemp + Copy(mskCNPJ.Text, 12, 4);
   wTemp := wTemp + Copy(mskCNPJ.Text, 17, 2);
 
-  wValorCalculado := Copy(wTemp, 1,12);
-  wValorCalculado := wValorCalculado + IntToStr(wTEmpresa.fCalculaCNPJ(wValorCalculado));
-  wValorCalculado := wValorCalculado + IntToStr(wTEmpresa.fCalculaCNPJ(wValorCalculado));
+  // CALCULA O VALOR DOS DOIS ÚLTIMOS DÍGITOS E OS ADICIONA NO FINAL DO CNPJ
+  wVlr := Copy(wTemp, 1,12);
+  wVlr := wVlr + IntToStr(wTEmpresa.fCalculaCNPJ(wVlr));
+  wVlr := wVlr + IntToStr(wTEmpresa.fCalculaCNPJ(wVlr));
 
-  if (wValorCalculado = wTemp) then
+  // SE O VALOR DAS DUAS CNPJS FOR IGUAL ENTÃO O RESULTADO É VERDADEIRO
+  if (wVlr = wTemp) then
      Result := True
   else
      begin
        lbAviso.Caption := 'CNPJ inválido';
+       rbErro.Checked := True;
        mskCNPJ.SetFocus;
        Result := False;
      end;
@@ -210,11 +229,14 @@ function TfrCadEmpresas.fVerificaCodigo: Boolean;
 var
   wTemp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
     wTemp := StrToInt(edCodigo.Text);
     Result := True;
   except
+    // SE DER ERRO O CAMPO É INVALIDADO
     lbAviso.Caption := 'Código inválido';
+    rbErro.Checked := True;
     edCodigo.SetFocus;
     Result := False;
   end;
@@ -225,21 +247,25 @@ var
   wTemp : String;
 begin
 
-  // VERIFICA SE O NOME NÃO É APENAS ESPAÇOS EM BRANCO E CORTA OS ESPAÇOS INÚTEIS
-  wTemp := edNome.Text;
-  wTemp := StringReplace(wTemp, ' ', EmptyStr, [rfReplaceAll]);
+  // CORTA OS ESPAÇOS INÚTEIS
+  wTemp       := edNome.Text;
+  wTemp       := StringReplace(wTemp, ' ', EmptyStr, [rfReplaceAll]);
   edNome.Text := TrimLeft(edNome.Text);
   edNome.Text := TrimRight(edNome.Text);
 
+  // VERIFICA SE O CAMPO NÃO É VAZIO
   if (edNome.Text = '') or (wTemp = '') then
      begin
        lbAviso.Caption := 'Nome inválido';
+       rbErro.Checked := True;
        edNome.SetFocus;
        Result := False;
      end
+  // VERIFICA SE O CAMPO NÃO É MUITO GRANDE
   else if ((Length(edNome.Text)) > 500) then
      begin
        lbAviso.Caption := 'Nome muito grande';
+       rbErro.Checked := True;
        edNome.SetFocus;
        Result := False;
      end
@@ -249,19 +275,23 @@ end;
 
 function TfrCadEmpresas.fVerificaTelefone: Boolean;
 var
-  wQTD, wI : Integer;
+  wQtd : Integer;
+  wI   : Integer;
 begin
 
-  wQTD := 0;
+  // COLETA A QUANTIDADE DE ESPAÇOS EM BRANCO NO CAMPO
+  wQtd := 0;
   for wI := 0 to Length(mskTelefone.Text) do
     begin
       if (mskTelefone.Text[wI] = ' ') then
-         wQTD := wQTD + 1;
+         wQtd := wQtd + 1;
     end;
 
-  if (wQTD > 0) then
+  // SE HOUVEREM ESPAÇOS EM BRANCO, O CAMPO É INVALIDADO
+  if (wQtd > 0) then
      begin
        lbAviso.Caption := 'Telefone inválido';
+       rbErro.Checked := True;
        mskTelefone.SetFocus;
        Result := False;
        exit;
@@ -271,23 +301,22 @@ begin
 end;
 
 procedure TfrCadEmpresas.pColetaDados;
-var
-  wTelefone : String;
 begin
-  // Coleta os dados na tela
-  wTEmpresa.wCod := StrToInt(edCodigo.Text);
-  wTEmpresa.wCNPJ := mskCNPJ.Text;
-  wTEmpresa.wNome := edNome.Text;
-  wTEmpresa.wCodUF := cbUF.ItemIndex;
+  // COLETA OS DADOS NA TELA
+  wTEmpresa.wCod      := StrToInt(edCodigo.Text);
+  wTEmpresa.wCNPJ     := mskCNPJ.Text;
+  wTEmpresa.wNome     := edNome.Text;
+  wTEmpresa.wCodUF    := cbUF.ItemIndex;
   wTEmpresa.wTelefone := mskTelefone.Text;
 end;
 
 procedure TfrCadEmpresas.pLimpaDados;
 begin
-  wTEmpresa.wCod := 0;
-  wTEmpresa.wCNPJ := '';
-  wTEmpresa.wNome := '';
-  wTEmpresa.wCodUF := 0;
+  // LIMPA OS DADOS DO OBJETO EMPRESA
+  wTEmpresa.wCod      := 0;
+  wTEmpresa.wCNPJ     := '';
+  wTEmpresa.wNome     := '';
+  wTEmpresa.wCodUF    := 0;
   wTEmpresa.wTelefone := '';
 end;
 

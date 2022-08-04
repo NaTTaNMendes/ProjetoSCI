@@ -2,8 +2,8 @@ object frPEDSCI: TfrPEDSCI
   Left = 0
   Top = 0
   Caption = 'PED-Projeto Estagio Desenvolvedor'
-  ClientHeight = 299
-  ClientWidth = 625
+  ClientHeight = 329
+  ClientWidth = 643
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,8 +22,8 @@ object frPEDSCI: TfrPEDSCI
   object imFundo: TImage
     Left = 0
     Top = 0
-    Width = 625
-    Height = 299
+    Width = 643
+    Height = 329
     Align = alClient
     Picture.Data = {
       0954506E67496D61676589504E470D0A1A0A0000000D49484452000007800000
@@ -2380,6 +2380,14 @@ object frPEDSCI: TfrPEDSCI
       object mmRelatorioNotas: TMenuItem
         Caption = 'Notas'
         OnClick = mmRelatorioNotasClick
+      end
+      object mmRelatorioClientes: TMenuItem
+        Caption = 'Clientes'
+        OnClick = mmRelatorioClientesClick
+      end
+      object mmRelatorioProduto: TMenuItem
+        Caption = 'Produtos'
+        OnClick = mmRelatorioProdutoClick
       end
     end
     object mmAjuda: TMenuItem

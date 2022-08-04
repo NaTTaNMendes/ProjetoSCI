@@ -21,6 +21,7 @@ type
     lbAviso: TLabel;
     mskTelefone: TMaskEdit;
     mskCPF: TMaskEdit;
+    rbErro: TRadioButton;
     procedure btOkClick(Sender: TObject);
     procedure btExcluirClick(Sender: TObject);
     procedure pLimpaDados();
@@ -30,11 +31,14 @@ type
     procedure btConsultarClick(Sender: TObject);
   private
     { Private declarations }
-    wTCliente : TCliente;
-    function fVerificaCodigo() : Boolean;
-    function fVerificaCPF() : Boolean;
-    function fVerificaNome() : Boolean;
-    function fVerificaTelefone() : Boolean;
+    // VARÍAVEIS GLOBAIS
+    wTCliente                     : TCliente;
+
+    // FUNÇÕES
+    function fVerificaCodigo()    : Boolean;
+    function fVerificaCPF()       : Boolean;
+    function fVerificaNome()      : Boolean;
+    function fVerificaTelefone()  : Boolean;
   public
     { Public declarations }
     function setTabela: TClientDataSet; override;
@@ -52,6 +56,7 @@ uses udmDadosPEDSCI, uConsCliente;
 procedure TfrCadCliente.btConsultarClick(Sender: TObject);
 begin
   inherited;
+  // CRIA E MOSTRA A TELA DE CONSULTA DE CLIENTES
   TfrConsCliente.Create(edCodigo);
 end;
 
@@ -61,17 +66,18 @@ var
 begin
   inherited;
 
-  // Verifica os campos
+  // VERIFICA OS CAMPOS
   wPasse := True;
-  if not(fVerificaCodigo) then
+  if not(fVerificaCodigo)        then
      wPasse := False
-  else if not(fVerificaCPF) then
+  else if not(fVerificaCPF)      then
      wPasse := False
-  else if not(fVerificaNome) then
+  else if not(fVerificaNome)     then
      wPasse := False
   else if not(fVerificaTelefone) then
      wPasse := False;
 
+  // CASO O CAMPOS ESTEJAM CORRETOS                  
   if (wPasse) then
      begin
        // COLETA OS DADOS
@@ -81,6 +87,9 @@ begin
        if (wTCliente.fDeletarCliente) then
           begin
             ShowMessage('Deletado com sucesso');
+            lbAviso.Caption := '';
+            rbErro.Checked := False;
+            pLimpaDados;
             setLimpaCampos;
           end
        else
@@ -94,17 +103,19 @@ var
   wPasse : Boolean;
 begin
   inherited;
-  // Verifica os campos
+  
+  // VERIFICA OS CAMPOS
   wPasse := True;
-  if not(fVerificaCodigo) then
+  if not(fVerificaCodigo)        then
      wPasse := False
-  else if not(fVerificaCPF) then
+  else if not(fVerificaCPF)      then
      wPasse := False
-  else if not(fVerificaNome) then
+  else if not(fVerificaNome)     then
      wPasse := False
   else if not(fVerificaTelefone) then
      wPasse := False;
 
+  // CASO OS CAMPOS ESTEJAM CORRETOS
   if (wPasse) then
      begin
        // COLETA OS DADOS
@@ -115,8 +126,10 @@ begin
           begin
             ShowMessage('Dados inseridos');
             lbAviso.Caption := '';
+            rbErro.Checked := False;
             pLimpaDados;
             setLimpaCampos;
+            edCodigo.SetFocus;
           end
        else
           ShowMessage('Falha ao inserir dados');
@@ -127,89 +140,104 @@ end;
 procedure TfrCadCliente.edCodigoExit(Sender: TObject);
 begin
   inherited;
-  // COLOCA FOCO NO CAMPO DE CÓDIGO
-  dmDadosPEDSCI.tbClientes.IndexFieldNames := 'BDCODCLI';
+  // CASO O CÓDIGO SEJA INVÁLIDO, NADA ACONTECERÁ
+  try
+    // COLOCA FOCO NO CAMPO DE CÓDIGO
+    dmDadosPEDSCI.tbClientes.IndexFieldNames := 'BDCODCLI';
 
-  // VERIFICA SE JÁ EXISTE ALGUM DADO NO BANCO
-  if dmDadosPEDSCI.tbClientes.FindKey([StrToInt(edCodigo.Text)]) then
-  begin
-    // INSERE OS DADOS DO BANCO NOS COMPONENTES
-    edCodigo.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDCODCLI').AsString;
-    edNome.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDNOMECLI').AsString;
-    mskCPF.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDCNPJCPF').AsString;
-    mskTelefone.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDTELEFONE').AsString;
-    cbUF.ItemIndex := (dmDadosPEDSCI.tbClientes.FieldByName('BDCODUF').AsInteger) - 1;
+    // VERIFICA SE JÁ EXISTE ALGUM DADO NO BANCO
+    if dmDadosPEDSCI.tbClientes.FindKey([StrToInt(edCodigo.Text)]) then
+       begin
+         // INSERE OS DADOS DO BANCO NOS COMPONENTES
+         edCodigo.Text    := dmDadosPEDSCI.tbClientes.FieldByName('BDCODCLI').AsString;
+         edNome.Text      := dmDadosPEDSCI.tbClientes.FieldByName('BDNOMECLI').AsString;
+         mskCPF.Text      := dmDadosPEDSCI.tbClientes.FieldByName('BDCNPJCPF').AsString;
+         mskTelefone.Text := dmDadosPEDSCI.tbClientes.FieldByName('BDTELEFONE').AsString;
+         cbUF.ItemIndex   := (dmDadosPEDSCI.tbClientes.FieldByName('BDCODUF').AsInteger) - 1;
+       end;
+  except
   end;
+  
 end;
 
 procedure TfrCadCliente.FormShow(Sender: TObject);
 begin
   inherited;
-  // CRIA A VARIÁVEL
+  // CRIA O OBJETO CLIENTE
   wTCliente := TCliente.Create;
 
-  // LIMPA OS CAMPOS
+  // LIMPA OS CAMPOS E OS DADOS
   setLimpaCampos;
   pLimpaDados;
 
   // PREPARA O LABEL DE AVISO
   lbAviso.Font.Color := clRed;
   lbAviso.Caption := '';
+  rbErro.Checked := False;
 end;
 
 function TfrCadCliente.fVerificaCodigo: Boolean;
 var
   wTemp : Integer;
 begin
+  // TENTA CONVERTER A STRING PARA INTEIRO
   try
-    wTemp := StrToInt(edCodigo.Text);
-    Result := True;
+    wTemp   := StrToInt(edCodigo.Text);
+    Result  := True;
   except
-    lbAviso.Caption := 'Código inválido';
     edCodigo.SetFocus;
-    Result := False;
+    lbAviso.Caption := 'Código inválido';
+    rbErro.Checked := True;
+    Result          := False;
   end;
 end;
 
 function TfrCadCliente.fVerificaCPF: Boolean;
 var
-  wTemp, wValorCalculado : String;
-  wQTD, wI : Integer;
+  wTemp     : String;
+  wVlr      : String;
+  wQtd      : Integer;
+  wI        : Integer;
 begin
 
-  // VERIFICA SE O CPF ESTÁ COMPLETO
-  wQTD := 0;
+  // COLETA A QUANTIDADE DE ESPAÇOS EM BRANCO NO CPF
+  wQtd := 0;
   for wI := 0 to Length(mskCPF.Text) do
     begin
       if (mskCPF.Text[wI] = ' ') then
-         wQTD := wQTD + 1;
+         wQtd := wQtd + 1;
     end;
 
-  if (wQTD > 0) then
+  // SE EXISTIREM ESPAÇOS O CAMPO É INVALIDADO
+  if (wQtd > 0) then
      begin
-       lbAviso.Caption := 'CPF inválido';
        mskCPF.SetFocus;
-       Result := False;
+       lbAviso.Caption := 'CPF inválido';
+       rbErro.Checked := True;
+       Result          := False;
        Exit;
      end;
 
   // COLETA OS CARACTERES NECESSÁRIOS E VERIFICA O CPF
-  wTemp := Copy(mskCPF.Text, 1, 3);
-  wTemp := wTemp + Copy(mskCPF.Text, 5, 3);
-  wTemp := wTemp + Copy(mskCPF.Text, 9, 3);
+  wTemp :=         Copy(mskCPF.Text,  1, 3);
+  wTemp := wTemp + Copy(mskCPF.Text,  5, 3);
+  wTemp := wTemp + Copy(mskCPF.Text,  9, 3);
   wTemp := wTemp + Copy(mskCPF.Text, 13, 2);
 
-  wValorCalculado := Copy(wTemp, 1,9);
-  wValorCalculado := wValorCalculado + IntToStr(wTCliente.fCalculaCPF(wValorCalculado));
-  wValorCalculado := wValorCalculado + IntToStr(wTCliente.fCalculaCPF(wValorCalculado));
+  // CALCULA OS DOIS ÚLTIMOS DÍGITOS DO CPF A PARTIR DA STRING INFORMADA
+  wVlr := Copy(wTemp, 1,9);
+  wVlr := wVlr + IntToStr(wTCliente.fCalculaCPF(wVlr));
+  wVlr := wVlr + IntToStr(wTCliente.fCalculaCPF(wVlr));
 
-  if (wValorCalculado = wTemp) then
+  // SE OS NÚMEROS FOREM IGUAIS O CPF É VÁLIDO
+  if (wVlr = wTemp) then
      Result := True
   else
      begin
-       lbAviso.Caption := 'CPF inválido';
        mskCPF.SetFocus;
-       Result := False;
+       lbAviso.Caption := 'CPF inválido';
+       rbErro.Checked := True;
+       Result          := False;
        Exit;
      end;
 
@@ -221,22 +249,26 @@ var
 begin
 
   // VERIFICA SE O NOME NÃO É APENAS ESPAÇOS EM BRANCO E CORTA OS ESPAÇOS INÚTEIS
-  wTemp := edNome.Text;
-  wTemp := StringReplace(wTemp, ' ', EmptyStr, [rfReplaceAll]);
+  wTemp       := edNome.Text;
+  wTemp       := StringReplace(wTemp, ' ', EmptyStr, [rfReplaceAll]);
   edNome.Text := TrimLeft(edNome.Text);
   edNome.Text := TrimRight(edNome.Text);
 
+  // SE NÃO HOUVEREM CARACTERES NO NOME, O CAMPO É INVALIDADO
   if (edNome.Text = '') or (wTemp = '') then
      begin
-       lbAviso.Caption := 'Nome inválido';
        edNome.SetFocus;
-       Result := False;
+       lbAviso.Caption := 'Nome inválido';
+       rbErro.Checked := True;
+       Result          := False;
      end
+  // SE O NOME FOR MUITO GRANDE O CAMPO É INVALIDADO
   else if ((Length(edNome.Text)) > 200) then
      begin
-       lbAviso.Caption := 'Nome muito grande';
        edNome.SetFocus;
-       Result := False;
+       lbAviso.Caption := 'Nome muito grande';
+       rbErro.Checked := True;
+       Result          := False;
      end
   else
      Result := True;
@@ -244,9 +276,11 @@ end;
 
 function TfrCadCliente.fVerificaTelefone: Boolean;
 var
-  wQTD, wI : Integer;
+  wQTD : Integer;
+  wI   : Integer;
 begin
 
+  // COLETA A QUANTIDADE DE ESPAÇOS EM BRANCO NO CAMPO
   wQTD := 0;
   for wI := 0 to Length(mskTelefone.Text) do
     begin
@@ -254,11 +288,13 @@ begin
          wQTD := wQTD + 1;
     end;
 
+  // SE HOUVEREM ESPAÇOS EM BRANCO, O CAMPO É INVALIDADO
   if (wQTD > 0) then
      begin
-       lbAviso.Caption := 'Telefone inválido';
        mskTelefone.SetFocus;
-       Result := False;
+       lbAviso.Caption := 'Telefone inválido';
+       rbErro.Checked  := True;
+       Result          := False;
        exit;
      end
   else
@@ -268,20 +304,20 @@ end;
 procedure TfrCadCliente.pColetaDados;
 begin
   // COLETA TODOS OS CAMPOS DA TELA
-  wTCliente.wCod := StrToInt(edCodigo.Text);
-  wTCliente.wCPF := mskCPF.Text;
-  wTCliente.wNome := edNome.Text;
-  wTCliente.wCodUF := cbUF.ItemIndex;
+  wTCliente.wCod      := StrToInt(edCodigo.Text);
+  wTCliente.wCPF      := mskCPF.Text;
+  wTCliente.wNome     := edNome.Text;
+  wTCliente.wCodUF    := cbUF.ItemIndex;
   wTCliente.wTelefone := mskTelefone.Text;
 end;
 
 procedure TfrCadCliente.pLimpaDados;
 begin
   // LIMPA TODOS OS DADOS DA CLASSE CLIENTE
-  wTCliente.wCod := 0;
-  wTCliente.wCPF := '';
-  wTCliente.wNome := '';
-  wTCliente.wCodUF := 0;
+  wTCliente.wCod      := 0;
+  wTCliente.wCPF      := '';
+  wTCliente.wNome     := '';
+  wTCliente.wCodUF    := 0;
   wTCliente.wTelefone := '';
 end;
 

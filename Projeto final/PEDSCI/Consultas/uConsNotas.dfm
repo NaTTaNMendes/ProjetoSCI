@@ -43,21 +43,9 @@ inherited frConsNota: TfrConsNota
       end
       item
         Expanded = False
-        FieldName = 'BDCODPROD'
-        Title.Caption = 'Produto'
-        Visible = True
-      end
-      item
-        Expanded = False
         FieldName = 'BDDATAEMISSAO'
         Title.Caption = 'Data emiss'#227'o'
         Width = 80
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'BDQTD'
-        Title.Caption = 'Quantidade'
         Visible = True
       end
       item
@@ -101,9 +89,7 @@ inherited frConsNota: TfrConsNota
       'NOTA'
       'CLIENTE'
       'EMPRESA'
-      'PRODUTO'
       'DATA'
-      'QUANTIDADE'
       'TOTAL'
       'BCICMS'
       'AL'#205'QUOTA ICMS'

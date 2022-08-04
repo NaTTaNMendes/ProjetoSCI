@@ -244,16 +244,8 @@ object dmDadosPEDSCI: TdmDadosPEDSCI
         DataType = ftInteger
       end
       item
-        Name = 'BDCODPRO'
-        DataType = ftInteger
-      end
-      item
         Name = 'BDDATAEMISSAO'
         DataType = ftDate
-      end
-      item
-        Name = 'BDQTD'
-        DataType = ftInteger
       end
       item
         Name = 'BDVLRNOTA'
@@ -287,17 +279,8 @@ object dmDadosPEDSCI: TdmDadosPEDSCI
         Fields = 'BDCODEMP'
       end
       item
-        Name = 'iCODPROD'
-        Fields = 'BDCODPROD'
-      end
-      item
         Name = 'iDATA'
         Fields = 'BDDATAEMISSAO'
-        Options = [ixCaseInsensitive]
-      end
-      item
-        Name = 'iQTD'
-        Fields = 'BDQTD'
         Options = [ixCaseInsensitive]
       end
       item
