@@ -74,6 +74,7 @@ begin
     ShowMessage('Código inválido');
     edFiltro.Text := '';
     edFiltro.SetFocus;
+
   end;
 
   pVerificaGrid;

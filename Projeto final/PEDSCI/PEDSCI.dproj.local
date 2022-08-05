@@ -35,8 +35,8 @@
     <Transaction>2022/07/19 17:56:12.000.745,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uLancNota.pas</Transaction>
     <Transaction>2022/07/19 17:56:12.000.745,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Consultas\uLancNota.dfm</Transaction>
     <Transaction>2022/07/20 13:20:11.000.519,=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
-    <Transaction>2022/07/20 13:21:10.000.011,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadProdutos.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/07/20 13:21:10.000.011,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadProdutos.dfm=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.dfm</Transaction>
+    <Transaction>2022/07/20 13:21:10.000.011,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadProdutos.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/07/20 13:44:50.000.892,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadProdutos.pas=</Transaction>
     <Transaction>2022/07/20 13:45:05.000.556,=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/07/20 13:46:20.000.265,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Unit1.pas=C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\Cadastros\uCadProdutos.pas</Transaction>
@@ -51,18 +51,20 @@
     <Transaction>2022/07/22 11:10:44.000.942,C:\Users\prog28\Desktop\Projeto final\Projeto final\PEDSCI\uFiltro.pas=</Transaction>
     <Transaction>2022/07/28 13:26:48.000.122,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCIForms\uFormPadraoRelatorioPEDSCI.pas</Transaction>
     <Transaction>2022/07/28 13:33:35.000.406,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.pas</Transaction>
-    <Transaction>2022/07/28 13:34:20.000.146,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.dfm</Transaction>
     <Transaction>2022/07/28 13:34:20.000.146,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.pas</Transaction>
+    <Transaction>2022/07/28 13:34:20.000.146,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.dfm</Transaction>
     <Transaction>2022/07/28 13:38:13.000.157,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresas.pas</Transaction>
     <Transaction>2022/07/28 13:38:35.000.601,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresas.pas=</Transaction>
-    <Transaction>2022/07/28 13:39:04.000.281,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.pas</Transaction>
     <Transaction>2022/07/28 13:39:04.000.281,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.dfm</Transaction>
-    <Transaction>2022/07/28 13:39:10.000.342,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresa.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.dfm</Transaction>
+    <Transaction>2022/07/28 13:39:04.000.281,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelatorio.pas</Transaction>
     <Transaction>2022/07/28 13:39:10.000.342,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresa.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.pas</Transaction>
+    <Transaction>2022/07/28 13:39:10.000.342,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmpresa.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelEmrpesa.dfm</Transaction>
     <Transaction>2022/07/29 12:55:33.000.767,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelNota.pas</Transaction>
     <Transaction>2022/08/01 15:57:05.000.193,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/08/01 15:57:51.000.818,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Cadastros\uCadItens.pas=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.pas</Transaction>
     <Transaction>2022/08/01 15:57:51.000.818,C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Cadastros\uCadItens.dfm=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Unit1.dfm</Transaction>
+    <Transaction>2022/08/04 16:20:04.000.890,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelProduto.pas</Transaction>
+    <Transaction>2022/08/04 16:54:25.616,=C:\Users\prog28\Desktop\GIT\ProjetoSCI\Projeto final\PEDSCI\Relatorios\uRelCliente.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="..\..\Projeto final"/>
@@ -106,6 +108,10 @@
     <File Path="Relatorios\uRelEmpresa.dfm"/>
     <File Path="Relatorios\uRelNota.pas"/>
     <File Path="Relatorios\uRelNota.dfm"/>
+    <File Path="Relatorios\uRelProduto.pas"/>
+    <File Path="Relatorios\uRelProduto.dfm"/>
+    <File Path="Relatorios\uRelCliente.pas"/>
+    <File Path="Relatorios\uRelCliente.dfm"/>
     <File Path="uPEDSCI.pas"/>
     <File Path="uPEDSCI.dfm"/>
   </ProjectSortOrder>

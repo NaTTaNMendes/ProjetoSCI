@@ -174,7 +174,8 @@ begin
   // PREPARA O LABEL DE AVISO
   lbAviso.Font.Color := clRed;
   lbAviso.Caption := '';
-  rbErro.Checked := False;
+  rbErro.Checked  := False;
+  rbErro.Visible  := False;
 end;
 
 function TfrCadProduto.fVerificaCodigo: Boolean;

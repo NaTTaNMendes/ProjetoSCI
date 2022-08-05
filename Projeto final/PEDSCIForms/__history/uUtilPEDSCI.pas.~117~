@@ -1,0 +1,369 @@
+unit uUtilPEDSCI;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, udmDadosPEDSCI;
+
+type
+  TUtilPEDSCI = class
+  public
+    class function PodeExcluir: Boolean;
+  end;
+
+  TEmpresa = class
+  public
+    // DECLARAÇÃO DAS VARIÁVEIS
+    wCod        : Integer;
+    wCNPJ       : String;
+    wNome       : String;
+    wCodUF      : Integer;
+    wTelefone   : String;
+
+    // DECLARAÇÃO DAS FUNÇÕES
+    function fCalculaCNPJ(prEntrada : String) : Integer;
+    function fDeletarEmpresa()                : Boolean;
+    function fInserirEmpresa()                : Boolean;
+  end;
+
+  TCliente = class
+  public
+    // DECLARAÇÃO DAS VARIÁVEIS
+    wCod        : Integer;
+    wCPF        : String;
+    wNome       : String;
+    wCodUF      : Integer;
+    wTelefone   : String;
+
+    // DECLARAÇÃO DAS FUNÇÕES
+    function fCalculaCPF(prEntrada : String)  : Integer;
+    function fDeletarCliente()                : Boolean;
+    function fInserirCliente()                : Boolean;
+  end;
+
+  TNota = class
+  public
+    // DECLARAÇÃO DAS VARIÁVEIS
+    wCod        : Integer;
+    wCodCli     : Integer;
+    wCodEmp     : Integer;
+    wData       : TDateTime;
+    wAliquota   : Currency;
+    wValor      : Currency;
+
+    // DECLARAÇÃO DAS FUNÇÕES
+    function fInserirNota()                   : Boolean;
+    function fDeletarNota()                   : Boolean;
+  end;
+
+  TProduto = class
+  public
+    // DECLARAÇÃO DAS VARIÁVEIS
+    wCod        : Integer;
+    wDescricao  : String;
+    wNCM        : Integer;
+    wValor      : Currency;
+
+    // DECLARAÇÃO DAS FUNÇÕES
+    function fInserirProduto()                : Boolean;
+    function fDeletarProduto()                : Boolean;
+  end;
+
+  TItemNota = class
+  public
+    // DECLARAÇÃO DAS VARIÁVEIS
+    wCodNota    : Integer;
+    wCodItem    : Integer;
+    wCodProd    : Integer;
+    wQuantidade : Integer;
+    wCodEmp     : Integer;
+    wVlrUnit    : Currency;
+    wVlrTotal   : Currency;
+
+    // DECLARAÇÃO DAS FUNÇÕES
+    function fInserirItem()                   : Boolean;
+    function fDeletarItem()                   : Boolean;
+  end;
+implementation
+
+{ TUtilPEDSCI }
+
+class function TUtilPEDSCI.PodeExcluir: Boolean;
+begin
+  // PERGUNTA PARA O USUÁRIO SE ELE REALMENTE DESEJA ENCERRAR O SISTEMA
+  Result := MessageDlg('Deseja realmente excluir esse registro?', mtWarning, [mbYes,mbNo], 0) = mrYes;
+end;
+
+{ TEmpresa }
+
+// AS REGRAS COMPLETAS DE CÁLCULO DE CNPJ E CPF FORAM VISTAS NO SITE:
+// https://campuscode.com.br/conteudos/o-calculo-do-digito-verificador-do-cpf-e-do-cnpj
+function TEmpresa.fCalculaCNPJ(prEntrada: String): Integer;
+var
+  wInc                  : Integer;
+  wSoma                 : Integer;
+  wCount                : Integer;
+  wTemp                 : Integer;
+  wResto                : Integer;
+begin
+  wInc  := 2;
+  wSoma := 0;
+
+  for wCount := Length(prEntrada) downto 1 do
+    begin
+
+      if (wInc = 10) then
+         wInc := 2;
+
+      wTemp := StrToInt(prEntrada[wCount]) * wInc;
+      wSoma := wSoma + wTemp;
+      wInc  := wInc + 1;
+
+    end;
+
+  wResto := wSoma mod 11;
+
+  if (wResto < 2) then
+     Result := 0
+  else
+     Result := 11 - wResto;
+end;
+
+function TEmpresa.fDeletarEmpresa(): Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbEmpresas.IndexFieldNames := 'BDCODEMP';
+
+  if dmDadosPEDSCI.tbEmpresas.FindKey([wCod]) then
+     begin
+       // DELETA OS DADOS
+       dmDadosPEDSCI.tbEmpresas.Delete;
+       // INFORMA QUE FUNCIONOU
+       Result := True;
+     end
+  else
+     // INFORMA QUE FALHOU
+     Result := False;
+end;
+
+function TEmpresa.fInserirEmpresa(): Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbEmpresas.IndexFieldNames := 'BDCODEMP';
+  if dmDadosPEDSCI.tbEmpresas.FindKey([wCod]) then
+     dmDadosPEDSCI.tbEmpresas.Edit
+  else
+     dmDadosPEDSCI.tbEmpresas.Insert;
+
+  // INSERE OS DADOS NO CDS
+  dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODEMP').AsInteger  := wCod;
+  dmDadosPEDSCI.tbEmpresas.FieldByName('BDCNPJCPF').AsString  := wCNPJ;
+  dmDadosPEDSCI.tbEmpresas.FieldByName('BDNOMEEMP').AsString  := wNome;
+  dmDadosPEDSCI.tbEmpresas.FieldByName('BDCODUF').AsInteger   := wCodUF + 1;
+  dmDadosPEDSCI.tbEmpresas.FieldByName('BDTELEFONE').AsString := wTelefone;
+
+  // ENVIA PARA O BANCO
+  dmDadosPEDSCI.tbEmpresas.Post;
+
+  // INFORMA QUE DEU CERTO
+  Result := True;
+end;
+
+{ TCliente }
+
+// AS REGRAS COMPLETAS DE CÁLCULO DE CNPJ E CPF FORAM VISTAS NO SITE:
+// https://campuscode.com.br/conteudos/o-calculo-do-digito-verificador-do-cpf-e-do-cnpj
+function TCliente.fCalculaCPF(prEntrada: String): Integer;
+var
+  wInc                  : Integer;
+  wSoma                 : Integer;
+  wCount                : Integer;
+  wTemp                 : Integer;
+  wResto                : Integer;
+begin
+  wInc  := 2;
+  wSoma := 0;
+
+  for wCount := Length(prEntrada) downto 1 do
+    begin
+      wTemp := StrToInt(prEntrada[wCount]) * wInc;
+      wSoma := wSoma + wTemp;
+      wInc := wInc + 1;
+    end;
+
+  wResto := wSoma mod 11;
+
+  if (wResto < 2) then
+     Result := 0
+  else
+     Result := 11 - wResto;
+end;
+
+function TCliente.fDeletarCliente: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbClientes.IndexFieldNames := 'BDCODCLI';
+  if dmDadosPEDSCI.tbClientes.FindKey([wCod]) then
+     begin
+       // DELETA OS DADOS
+       dmDadosPEDSCI.tbClientes.Delete;
+       // INFORMA QUE FUNCIONOU
+       Result := True;
+     end
+  else
+     // INFORMA QUE FALHOU
+     Result := False;
+end;
+
+function TCliente.fInserirCliente: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbClientes.IndexFieldNames := 'BDCODCLI';
+  if dmDadosPEDSCI.tbClientes.FindKey([wCod]) then
+     dmDadosPEDSCI.tbClientes.Edit
+  else
+     dmDadosPEDSCI.tbClientes.Insert;
+
+  // INSERE OS DADOS NO CDS
+  dmDadosPEDSCI.tbClientes.FieldByName('BDCODCLI').AsInteger  := wCod;
+  dmDadosPEDSCI.tbClientes.FieldByName('BDCNPJCPF').AsString  := wCPF;
+  dmDadosPEDSCI.tbClientes.FieldByName('BDNOMECLI').AsString  := wNome;
+  dmDadosPEDSCI.tbClientes.FieldByName('BDCODUF').AsInteger   := wCodUF + 1;
+  dmDadosPEDSCI.tbClientes.FieldByName('BDTELEFONE').AsString := wTelefone;
+
+  // ENVIA PARA O BANCO
+  dmDadosPEDSCI.tbClientes.Post;
+
+  // INFORMA QUE DEU CERTO
+  Result := True;
+end;
+
+{ TProduto }
+
+function TProduto.fDeletarProduto: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDCODPROD';
+  if dmDadosPEDSCI.tbProdutos.FindKey([wCod]) then
+     begin
+       // DELETA OS DADOS
+       dmDadosPEDSCI.tbProdutos.Delete;
+       // INFORMA QUE FUNCIONOU
+       Result := True;
+     end
+  else
+     // INFORMA QUE FALHOU
+     Result := False;
+end;
+
+function TProduto.fInserirProduto: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbProdutos.IndexFieldNames := 'BDCODPROD';
+  if dmDadosPEDSCI.tbProdutos.FindKey([wCod]) then
+     dmDadosPEDSCI.tbProdutos.Edit
+  else
+     dmDadosPEDSCI.tbProdutos.Insert;
+
+  // INSERE OS DADOS NO CDS
+  dmDadosPEDSCI.tbProdutos.FieldByName('BDCODPROD').AsInteger   := wCod;
+  dmDadosPEDSCI.tbProdutos.FieldByName('BDDESCRICAO').AsString  := wDescricao;
+  dmDadosPEDSCI.tbProdutos.FieldByName('BDNCM').AsInteger       := wNCM;
+  dmDadosPEDSCI.tbProdutos.FieldByName('BDVALOR').AsCurrency    := wValor;
+
+  // ENVIA PARA O BANCO
+  dmDadosPEDSCI.tbProdutos.Post;
+
+  // INFORMA QUE DEU CERTO
+  Result := True;
+end;
+
+{ TNota }
+
+function TNota.fDeletarNota: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODNOTA';
+  if dmDadosPEDSCI.tbNotas.FindKey([wCod]) then
+     begin
+       // DELETA OS DADOS
+       dmDadosPEDSCI.tbNotas.Delete;
+       // INFORMA QUE FUNCIONOU
+       Result := True;
+     end
+  else
+     // INFORMA QUE FALHOU
+     Result := False;
+end;
+
+function TNota.fInserirNota: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODNOTA; BDCODEMP';
+  if dmDadosPEDSCI.tbNotas.FindKey([wCod, wCodEmp]) then
+     dmDadosPEDSCI.tbNotas.Edit
+  else
+     dmDadosPEDSCI.tbNotas.Insert;
+
+  // INSERE OS DADOS NO CDS
+  dmDadosPEDSCI.tbNotas.FieldByName('BDCODNOTA').AsInteger      := wCod;
+  dmDadosPEDSCI.tbNotas.FieldByName('BDCODCLI').AsInteger       := wCodCli;
+  dmDadosPEDSCI.tbNotas.FieldByName('BDCODEMP').AsInteger       := wCodEmp;
+  dmDadosPEDSCI.tbNotas.FieldByName('BDDATAEMISSAO').AsDateTime := wData;
+  dmDadosPEDSCI.tbNotas.FieldByName('BDVLRNOTA').AsCurrency     := wValor;
+  dmDadosPEDSCI.tbNotas.FieldByName('BDBCICMS').AsCurrency      := wValor;
+  dmDadosPEDSCI.tbNotas.FieldByName('BDALIQICMS').AsCurrency    := wAliquota;
+  dmDadosPEDSCI.tbNotas.FIeldByName('BDVLRICMS').AsCurrency     := (wAliquota / 100) * wValor;
+
+  // ENVIA PARA O BANCO
+  dmDadosPEDSCI.tbNotas.Post;
+
+  // INFORMA QUE DEU CERTO
+  Result := True;
+end;
+
+{ TItemNota }
+
+function TItemNota.fDeletarItem: Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbItens.IndexFieldNames := 'BDCODNOTA; BDCODEMP';
+  dmDadosPEDSCI.tbItens.Filtered        := False;
+  dmDadosPEDSCI.tbItens.Filter          := '(BDCODNOTA = ' + IntToStr(wCodNota) + ' and BDCODEMP = ' + IntToStr(wCodEmp) + ')';
+  dmDadosPEDSCI.tbItens.Filtered        := True;
+  if dmDadosPEDSCI.tbItens.FindKey([wCodNota, wCodEmp]) then
+     begin
+       // DELETA OS DADOS
+       dmDadosPEDSCI.tbItens.Delete;
+       // INFORMA QUE FUNCIONOU
+       Result := True;
+     end
+  else
+     // INFORMA QUE FALHOU
+     Result := False;
+end;
+
+function TItemNota.fInserirItem : Boolean;
+begin
+  // SETA O CAMPO QUE IREMOS PESQUISAR
+  dmDadosPEDSCI.tbItens.IndexFieldNames := 'BDCODNOTA; BDCODEMP';
+  dmDadosPEDSCI.tbItens.Insert;
+
+  // INSERE OS DADOS NO CDS
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODNOTA').AsInteger      := wCodNota;
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODITEM').AsInteger      := wCodItem;
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODPROD').AsInteger      := wCodProd;
+  dmDadosPEDSCI.tbItens.FieldByName('BDQUANTIDADE').AsInteger   := wQuantidade;
+  dmDadosPEDSCI.tbItens.FieldByName('BDCODEMP').AsInteger       := wCodEmp;
+  dmDadosPEDSCI.tbItens.FieldByName('BDVLRUNITARIO').AsCurrency := wVlrUnit;
+  dmDadosPEDSCI.tbItens.FieldByName('BDVLRTOTAL').AsCurrency    := wVlrTotal;
+
+  // ENVIA PARA O BANCO
+  dmDadosPEDSCI.tbItens.Post;
+
+  // INFORMA QUE DEU CERTO
+  Result := True;
+end;
+
+end.

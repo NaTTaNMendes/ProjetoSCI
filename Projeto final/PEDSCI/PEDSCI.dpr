@@ -20,7 +20,9 @@ uses
   uFormPadraoRelatorioPEDSCI in '..\PEDSCIForms\uFormPadraoRelatorioPEDSCI.pas' {frFormPadraoRelatorioPEDSCI},
   uRelEmpresa in 'Relatorios\uRelEmpresa.pas' {frRelatorio},
   uRelNota in 'Relatorios\uRelNota.pas' {frRelatorioNota},
-  uCadItens in 'Cadastros\uCadItens.pas' {frCadItens};
+  uCadItens in 'Cadastros\uCadItens.pas' {frCadItens},
+  uRelProduto in 'Relatorios\uRelProduto.pas' {frRelatorioProduto},
+  uRelCliente in 'Relatorios\uRelCliente.pas' {frRelatorioCliente};
 
 {$R *.res}
 
@@ -30,5 +32,8 @@ begin
   Application.CreateForm(TfrPEDSCI, frPEDSCI);
   Application.CreateForm(TdmConnectionPEDSCI, dmConnectionPEDSCI);
   Application.CreateForm(TdmDadosPEDSCI, dmDadosPEDSCI);
+  Application.CreateForm(TfrRelatorioProduto, frRelatorioProduto);
+  Application.CreateForm(TfrRelatorioProduto, frRelatorioProduto);
+  Application.CreateForm(TfrRelatorioCliente, frRelatorioCliente);
   Application.Run;
 end.

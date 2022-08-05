@@ -108,6 +108,7 @@ var
   wItem       : TItemNota;
   wKey        : String;
   wCodItem    : Integer;
+  wQtdItens   : Integer;
   wI          : Integer;
   wObjeto     : TObjProduto;
   wLancNota   : TfrLancNota;
@@ -126,11 +127,20 @@ begin
        wItem := TItemNota.Create;
 
        // COLETA OS DADOS JÁ PASSADOS PELA TELA DE LANÇAMENTO DE NOTA
-       wItem.wCodNota  := wCodNota;
-       wItem.wCodEmp   := wCodEmp;
+       wItem.wCodNota       := wCodNota;
+       wItem.wCodEmp        := wCodEmp;
 
-       // DELETA OS ANTIGOS ITENS DA NOTA
-       wItem.fDeletarItem;
+       dmDadosPEDSCI.tbItens.Filtered        := False;
+       dmDadosPEDSCI.tbItens.Filter          := '(BDCODNOTA = ' + IntToStr(wCodNota) + ' and BDCODEMP = ' + IntToStr(wCodEmp) + ')';
+       dmDadosPEDSCI.tbItens.Filtered        := True;
+
+       wQtdItens := dmDadosPEDSCI.tbItens.RecordCount;
+
+       for wI := 1 to wQtdItens do
+          begin
+            wItem.wCodItem := wI;
+            wItem.fDeletarItem;
+          end;
 
        // SETA O CÓDIGO DO ITEM DENTRO DA NOTA FISCAL E CRIA UM VALOR TOTAL INICIAL
        wItem.wCodItem  := 0;
@@ -171,7 +181,9 @@ begin
        wLancNota.wTotal := wValorTotal;
        wLancNota.edCodigoNota.Text := IntToStr(wCodNota);
        wLancNota.edCodEmpresa.Text := IntToStr(wCodEmp);
-       wLancNota.edCodCliente.SetFocus;
+       wLancNota.edCodCliente.Text := IntToStr(wCodCliente);
+       wLancNota.edAliquota.Text   := CurrToStr(wAliq);
+       wLancNota.dtpData.Date      := wData;
        wLancNota.btOk.Click;
 
        // FECHA A TELA DE CADASTRO DE ITENS
