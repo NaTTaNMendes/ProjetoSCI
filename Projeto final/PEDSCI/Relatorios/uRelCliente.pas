@@ -129,6 +129,8 @@ begin
   edCodFinal.Enabled    := False;
   edCodMaior.Enabled    := False;
   edCodMenor.Enabled    := False;
+
+  rbErro.Visible := False;
 end;
 
 function TfrRelatorioCliente.fVerificaCodEntre: Boolean;
@@ -199,7 +201,7 @@ begin
   except
     lbAviso.Caption := 'Código inválido';
     rbErro.Checked := True;
-    edCodInicial.SetFocus;
+    edCodMaior.SetFocus;
     Result := False;
   end;
 end;
@@ -230,7 +232,7 @@ begin
   except
     lbAviso.Caption := 'Código inválido';
     rbErro.Checked := True;
-    edCodInicial.SetFocus;
+    edCodMenor.SetFocus;
     Result := False;
   end;
 end;

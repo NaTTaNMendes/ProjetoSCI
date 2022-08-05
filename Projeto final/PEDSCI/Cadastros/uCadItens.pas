@@ -259,6 +259,8 @@ begin
     // ATUALIZA A LIST VIEW
     pMontrarList;
 
+    rbErro.Visible := False;
+
   except
     ShowMessage('Não existem produtos cadastrados no banco');
     Self.Close;
@@ -341,6 +343,10 @@ procedure TfrCadItens.pPullBanco;
 var
   wObjProd : TObjProduto;
 begin
+
+  // RESETA O CDS
+  dmDadosPEDSCI.tbItens.Refresh;
+
   // FILTRA OS ITENS COM O CÓDIGO DE EMPRESA E NOTA
   dmDadosPEDSCI.tbItens.IndexFieldNames := 'BDCODITEM';
   dmDadosPEDSCI.tbItens.Filtered        := False;

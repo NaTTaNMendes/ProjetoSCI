@@ -201,6 +201,7 @@ begin
   lbAviso.Font.Color := clRed;
   lbAviso.Caption := '';
   rbErro.Checked := False;
+  rbErro.Visible := False;
 end;
 
 function TfrLancNota.fVerificaAliquota: Boolean;

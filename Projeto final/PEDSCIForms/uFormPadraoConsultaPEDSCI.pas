@@ -67,8 +67,11 @@ begin
 end;
 
 procedure TfrFormPadraoConsultaPEDSCI.ExcluirClickPadrao(Sender: TObject);
+var
+  wPasse : Boolean;
 begin
   try
+    wPasse := False;
     if Assigned(FOnExcluirEvent) and TUtilPEDSCI.PodeExcluir then
        begin
          FOnExcluirEvent(btExcluir);
@@ -76,9 +79,11 @@ begin
             begin
               FTabela.Delete;
               FTabela.ApplyUpdates(0);
+              wPasse := True;
             end;
        end;
-    ShowMessage('Dados deletados com sucesso');
+    if (wPasse) then
+       ShowMessage('Dados deletados com sucesso');
   except
     ShowMessage('Não foi possível excluir');
   end;

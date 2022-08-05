@@ -208,7 +208,7 @@ begin
           end;
 
        // ORDERNA OS ITENS DA NOTA
-       SQLQueryPadrao.SQL.Add('ORDER BY ITENS.BDCODITEM');
+       SQLQueryPadrao.SQL.Add('ORDER BY PROD.BDCODPROD');
 
        // EXECUTA A QUERY (OPEN PARA SELECT, EXEC PARA INSERCAO OU DELECAO DE DADOS)
        SQLQueryPadrao.Open;
@@ -260,6 +260,7 @@ begin
   lbAviso.Color   := clRed;
   lbAviso.Caption := '';
   rbErro.Checked := False;
+  rbErro.Visible := False;
 
 end;
 

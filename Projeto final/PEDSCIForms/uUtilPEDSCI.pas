@@ -282,13 +282,34 @@ end;
 { TNota }
 
 function TNota.fDeletarNota: Boolean;
+var
+  wQtdItens : Integer;
+  wI        : Integer;
+  wItem     : TItemNota;
 begin
   // SETA O CAMPO QUE IREMOS PESQUISAR
-  dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODNOTA';
-  if dmDadosPEDSCI.tbNotas.FindKey([wCod]) then
+  dmDadosPEDSCI.tbNotas.IndexFieldNames := 'BDCODNOTA; BDCODEMP';
+  if dmDadosPEDSCI.tbNotas.FindKey([wCod, wCodEmp]) then
      begin
+       dmDadosPEDSCI.tbItens.Filtered        := False;
+       dmDadosPEDSCI.tbItens.Filter          := '(BDCODNOTA = ' + IntToStr(wCod) + ' and BDCODEMP = ' + IntToStr(wCodEmp) + ')';
+       dmDadosPEDSCI.tbItens.Filtered        := True;
+
+       wQtdItens := dmDadosPEDSCI.tbItens.RecordCount;
+
+       wItem := TItemNota.Create;
+       wItem.wCodNota := wCod;
+       wItem.wCodEmp := wCodEmp;
+
+       for wI := 1 to wQtdItens do
+          begin
+            wItem.wCodItem := wI;
+            wItem.fDeletarItem;
+          end;
+
        // DELETA OS DADOS
        dmDadosPEDSCI.tbNotas.Delete;
+
        // INFORMA QUE FUNCIONOU
        Result := True;
      end
@@ -336,6 +357,10 @@ begin
      begin
        // DELETA OS DADOS
        dmDadosPEDSCI.tbItens.Delete;
+
+       // CONFIRMA O UPDATE DO BANCO DE DADOS
+       dmDadosPEDSCI.tbItens.ApplyUpdates(0);
+
        // INFORMA QUE FUNCIONOU
        Result := True;
      end

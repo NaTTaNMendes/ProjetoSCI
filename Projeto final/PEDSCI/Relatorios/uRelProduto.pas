@@ -166,6 +166,8 @@ begin
   edValorFinal.Enabled  := False;
   edValorMaior.Enabled  := False;
   edValorMenor.Enabled  := False;
+
+  rbErro.Visible := False;
 end;
 
 function TfrRelatorioProduto.fVerificaCodEntre: Boolean;
@@ -236,7 +238,7 @@ begin
   except
     lbAviso.Caption := 'Código inválido';
     rbErro.Checked := True;
-    edCodInicial.SetFocus;
+    edCodMaior.SetFocus;
     Result := False;
   end;
 end;
@@ -267,7 +269,7 @@ begin
   except
     lbAviso.Caption := 'Código inválido';
     rbErro.Checked := True;
-    edCodInicial.SetFocus;
+    edCodMenor.SetFocus;
     Result := False;
   end;
 end;
@@ -285,7 +287,7 @@ begin
        begin
          lbAviso.Caption := 'Valor inicial maior que o final';
          rbErro.Checked := True;
-         edCodInicial.SetFocus;
+         edValorIncial.SetFocus;
          Result := False;
          Exit;
        end;
@@ -299,7 +301,7 @@ begin
        begin
          lbAviso.Caption := 'Nota não existe';
          rbErro.Checked := True;
-         edCodInicial.SetFocus;
+         edValorIncial.SetFocus;
          Result := False;
          Exit;
        end;
@@ -309,7 +311,7 @@ begin
   except
     lbAviso.Caption := 'Valores inválidos';
     rbErro.Checked := True;
-    edCodInicial.SetFocus;
+    edValorIncial.SetFocus;
     Result := False;
   end;
 end;
@@ -340,7 +342,7 @@ begin
   except
     lbAviso.Caption := 'Valor inválido';
     rbErro.Checked := True;
-    edCodInicial.SetFocus;
+    edValorMaior.SetFocus;
     Result := False;
   end;
 end;
@@ -371,7 +373,7 @@ begin
   except
     lbAviso.Caption := 'Valor inválido';
     rbErro.Checked := True;
-    edCodInicial.SetFocus;
+    edValorMenor.SetFocus;
     Result := False;
   end;
 end;
